@@ -48,3 +48,9 @@ Content-Type: application/json
   "author": "Unknown Author",
   "year": 2000
 }
+
+###
+
+### Get Book by Id
+GET http://localhost:5089/books/1
+GET http://localhost:5089/books/9999

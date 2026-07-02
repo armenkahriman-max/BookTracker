@@ -33,6 +33,18 @@ app.UseSwaggerUI();
 
 app.MapGet("/books", async (BookService service) => Results.Ok(await service.GetAllBooks()));
 
+app.MapGet("/books/{id:int}", async (int id, BookService service) =>
+{
+    var book = await service.GetBookById(id);
+
+    if (book is null)
+    {
+        return Results.NotFound();
+    }
+
+    return Results.Ok(book);
+});
+
 app.MapPost("/books", async (CreateBookRequest request, BookService service) =>
 {
     var response = await service.CreateBook(request);
@@ -62,6 +74,7 @@ app.MapPut("/books/{id:int}", async (int id, UpdateBookRequest request, BookServ
 
     return Results.NoContent();
 });
+
 
 app.Run();
 

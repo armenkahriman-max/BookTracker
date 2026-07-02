@@ -7,7 +7,7 @@ namespace BookTracker.Api.Tests.IntegrationTests.CreateBook;
 
 public class CreateBookTests
 {
-    private readonly WebApplicationFactory<Program> factory = new();
+    private readonly CustomWebApplicationFactory factory = new();
 
     [Fact]
     public async Task PostBookCreatesBook()

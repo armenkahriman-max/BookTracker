@@ -14,3 +14,6 @@ Content-Type: application/json
   "author": "Frank Herbert",
   "year": 1965
 }
+###
+
+GET {{BookTracker.Api_HostAddress}}/books

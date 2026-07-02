@@ -17,3 +17,11 @@ Content-Type: application/json
 ###
 
 GET {{BookTracker.Api_HostAddress}}/books
+
+### Delete existing book
+DELETE {{BookTracker.Api_HostAddress}}/books/1
+
+###
+
+### Delete non-existing book
+DELETE {{BookTracker.Api_HostAddress}}/books/9999

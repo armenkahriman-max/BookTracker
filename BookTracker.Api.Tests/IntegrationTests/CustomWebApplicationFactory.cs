@@ -41,4 +41,8 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
         base.Dispose(disposing);
         connection.Dispose();
     }
+
+    public EfReader GetReader() => new(Services);
+
+    public EfWriter GetWriter() => new(Services);
 }

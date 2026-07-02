@@ -27,5 +27,17 @@ public class CreateBookTests
         Assert.NotNull(created);
         Assert.True(created.Id > 0);
         Assert.Equal("The Heart Is a Lonely Hunter", created.Title);
+        var reader = factory.GetReader();
+
+        var book = reader.Query(context =>
+            context.Books.Find(created!.Id));
+
+        Assert.NotNull(book);
+        Assert.Equal("The Heart Is a Lonely Hunter", book.Title);
+        Assert.Equal("Carson McCullers", book.Author);
+        Assert.Equal(1940, book.Year);
+
+
     }
+
 }

@@ -8,4 +8,5 @@ public interface IBookRepository
     Task<Book?> GetByIdAsync(int id);
     Task<Book> AddAsync(Book book);
     Task<bool> DeleteAsync(int id);
+    Task<bool> UpdateAsync(Book book);
 }

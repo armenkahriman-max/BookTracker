@@ -6,7 +6,7 @@ Accept: application/json
 ###
 
 ### Create Book
-POST http://localhost:5000/books
+POST http://localhost:5089/books
 Content-Type: application/json
 
 {
@@ -25,3 +25,26 @@ DELETE {{BookTracker.Api_HostAddress}}/books/1
 
 ### Delete non-existing book
 DELETE {{BookTracker.Api_HostAddress}}/books/9999
+
+###
+
+### Update Book
+PUT http://localhost:5089/books/1
+Content-Type: application/json
+
+{
+  "title": "Changes",
+  "author": "David Bowie",
+  "year": 1971
+}
+
+###
+
+PUT http://localhost:5089/books/9999
+Content-Type: application/json
+
+{
+  "title": "Unknown Book",
+  "author": "Unknown Author",
+  "year": 2000
+}

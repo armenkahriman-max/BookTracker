@@ -4,3 +4,13 @@ GET {{BookTracker.Api_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+
+### Create Book
+POST http://localhost:5000/books
+Content-Type: application/json
+
+{
+  "title": "Dune",
+  "author": "Frank Herbert",
+  "year": 1965
+}

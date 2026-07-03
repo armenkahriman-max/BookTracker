@@ -5,14 +5,14 @@ using BookTracker.Api.Domain;
 
 namespace BookTracker.Api.Tests.IntegrationTests.UpdateBook;
 
-public class UpdateBookTests
+public class UpdateBookTests : IntegrationTest
 {
-    private readonly CustomWebApplicationFactory factory = new();
+
 
     [Fact]
     public async Task PutBookUpdatesBook()
     {
-        var writer = factory.GetWriter();
+        var writer = Writer;
 
         writer.Seed(db =>
         {
@@ -33,13 +33,13 @@ public class UpdateBookTests
                 Year = 1969
             };
 
-        var client = factory.CreateClient();
 
-        var response = await client.PutAsJsonAsync("/books/1", request);
+
+        var response = await Client.PutAsJsonAsync("/books/1", request);
 
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
 
-        var reader = factory.GetReader();
+        var reader = Reader;
         var book = reader.Query(db => db.Books.Find(1));
 
         Assert.NotNull(book);
@@ -59,9 +59,9 @@ public class UpdateBookTests
                 Year = 2000
             };
 
-        var client = factory.CreateClient();
 
-        var response = await client.PutAsJsonAsync("/books/9999", request);
+
+        var response = await Client.PutAsJsonAsync("/books/9999", request);
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }

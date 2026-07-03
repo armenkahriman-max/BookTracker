@@ -6,16 +6,13 @@ using System.Net;
 
 namespace BookTracker.Api.Tests.IntegrationTests.BookList;
 
-public class BookListTests
+public class BookListTests : IntegrationTest
 {
-    private readonly CustomWebApplicationFactory factory = new();
 
     [Fact]
     public async Task GetBooksReturnsBooks()
     {
-        var client = factory.CreateClient();
-        
-        var response = await client.GetAsync("/books");
+        var response = await Client.GetAsync("/books");
         var books = await response.Content.ReadFromJsonAsync<List<BookInfo>>();
         
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);

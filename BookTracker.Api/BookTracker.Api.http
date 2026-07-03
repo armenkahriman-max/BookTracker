@@ -1,11 +1,8 @@
-@BookTracker.Api_HostAddress = http://localhost:5089
-
-GET {{BookTracker.Api_HostAddress}}/weatherforecast/
-Accept: application/json
+GET http://localhost:5089/books
 
 ###
 
-### Create Book
+# Create Book
 POST http://localhost:5089/books
 Content-Type: application/json
 
@@ -14,22 +11,20 @@ Content-Type: application/json
   "author": "Frank Herbert",
   "year": 1965
 }
-###
-
-GET {{BookTracker.Api_HostAddress}}/books
-
-### Delete existing book
-DELETE {{BookTracker.Api_HostAddress}}/books/1
 
 ###
 
-### Delete non-existing book
-DELETE {{BookTracker.Api_HostAddress}}/books/9999
+# Delete Book
+DELETE http://localhost:5089/books/2
 
 ###
 
-### Update Book
-PUT http://localhost:5089/books/1
+DELETE http://localhost:5089/books/9999
+
+###
+
+# Update Book
+PUT http://localhost:5089/books/6
 Content-Type: application/json
 
 {
@@ -51,6 +46,9 @@ Content-Type: application/json
 
 ###
 
-### Get Book by Id
-GET http://localhost:5089/books/1
+# Get Book by Id
+GET http://localhost:5089/books/6
+
+###
+
 GET http://localhost:5089/books/9999

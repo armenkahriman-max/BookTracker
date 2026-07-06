@@ -1,6 +1,8 @@
+using System.Linq.Expressions;
 using BookTracker.Api.Application;
 using BookTracker.Api.Application.BookList;
 using BookTracker.Api.Application.CreateBook;
+using BookTracker.Api.Application.DeleteBook;
 using BookTracker.Api.Application.GetBookById;
 using BookTracker.Api.Application.UpdateBook;
 using BookTracker.Api.Domain;
@@ -32,17 +34,19 @@ public static class BookEndpoints
         var book = await query.Execute(id);
         if (book is null)
         {
-            return Results.NotFound();  
+            return Results.NotFound();
         }
 
         return Results.Ok(book);
     }
 
-    public static async Task<IResult> CreateBook(CreateBookRequest request, BookService service)
+    public static async Task<IResult> CreateBook(
+        CreateBookRequest request,
+        CreateBookCommandHandler handler)
     {
         try
         {
-            var response = await service.CreateBook(request);
+            var response = await handler.Execute(request);
             return Results.Created($"/books/{response.Id}", response);
         }
         catch (DomainException exception)
@@ -51,11 +55,14 @@ public static class BookEndpoints
         }
     }
 
-    public static async Task<IResult> UpdateBook(int id, UpdateBookRequest request, BookService service)
+    public static async Task<IResult> UpdateBook(
+    int id,
+    UpdateBookRequest request,
+    UpdateBookCommandHandler handler)
     {
         try
         {
-            var updated = await service.UpdateBook(id, request);
+            var updated = await handler.Execute(id, request);
 
             if (!updated)
             {
@@ -70,9 +77,13 @@ public static class BookEndpoints
         }
     }
 
-    public static async Task<IResult> DeleteBook(int id, BookService service)
+   public static async Task<IResult> DeleteBook(
+    int id,
+    DeleteBookCommandHandler handler)
+{
+    try
     {
-        var deleted = await service.DeleteBook(id);
+        var deleted = await handler.Execute(id);
 
         if (!deleted)
         {
@@ -81,4 +92,9 @@ public static class BookEndpoints
 
         return Results.NoContent();
     }
+    catch (DomainException exception)
+    {
+        return Results.BadRequest(new { error = exception.Message });
+    }
+}
 }

@@ -19,7 +19,7 @@ public class UpdateBookTests : IntegrationTest
             db.Books.Add(
                 new Book
                 {
-                    Title = new BookTitle( "Dune"),
+                    Title = new BookTitle("Dune"),
                     Author = new AuthorName("Frank Herbert"),
                     Year = 1965
                 });
@@ -36,6 +36,8 @@ public class UpdateBookTests : IntegrationTest
 
 
         var response = await Client.PutAsJsonAsync("/books/1", request);
+
+        await response.ShouldHaveStatusCode(HttpStatusCode.NoContent);
 
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
 
@@ -62,6 +64,8 @@ public class UpdateBookTests : IntegrationTest
 
 
         var response = await Client.PutAsJsonAsync("/books/9999", request);
+
+        await response.ShouldHaveStatusCode(HttpStatusCode.NotFound);
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }

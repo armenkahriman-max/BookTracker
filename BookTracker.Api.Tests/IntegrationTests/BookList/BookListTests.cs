@@ -2,6 +2,7 @@ using System.Net.Http.Json;
 using BookTracker.Api.Application.BookList;
 using BookTracker.Api.Application;
 using BookTracker.Api.Domain;
+using System.Net;
 
 
 namespace BookTracker.Api.Tests.IntegrationTests.BookList;
@@ -22,7 +23,9 @@ public class BookListTests : IntegrationTest
             Year = 1945
         });
 });
-        var result = await Client.GetFromJsonAsync<PagedResult<BookInfo>>("/books");
+        var response = await Client.GetAsync("/books");
+
+        var result = await response.ReadJsonAs<PagedResult<BookInfo>>(HttpStatusCode.OK);
 
         Assert.NotNull(result);
 

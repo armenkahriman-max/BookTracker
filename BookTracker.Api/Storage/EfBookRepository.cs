@@ -5,17 +5,6 @@ namespace BookTracker.Api.Storage;
 
 public class EfBookRepository(AppDbContext dbContext) : IBookRepository
 {
-    public async Task<IReadOnlyList<Book>> GetAllAsync()
-    {
-        return await dbContext.Books
-        .ToListAsync();
-    }
-
-    public async Task<Book?> GetByIdAsync(int id)
-    {
-        return await dbContext.Books
-        .FirstOrDefaultAsync(b => b.Id == id);
-    }
 
     public async Task<Book> AddAsync(Book book)
     {
@@ -39,20 +28,20 @@ public class EfBookRepository(AppDbContext dbContext) : IBookRepository
     }
 
     public async Task<bool> UpdateAsync(Book book)
-{
-    var existingBook = await dbContext.Books.FindAsync(book.Id);
-
-    if (existingBook is null)
     {
-        return false;
+        var existingBook = await dbContext.Books.FindAsync(book.Id);
+
+        if (existingBook is null)
+        {
+            return false;
+        }
+
+        existingBook.Title = book.Title;
+        existingBook.Author = book.Author;
+        existingBook.Year = book.Year;
+
+        await dbContext.SaveChangesAsync();
+
+        return true;
     }
-
-    existingBook.Title = book.Title;
-    existingBook.Author = book.Author;
-    existingBook.Year = book.Year;
-
-    await dbContext.SaveChangesAsync();
-
-    return true;
-}
 }

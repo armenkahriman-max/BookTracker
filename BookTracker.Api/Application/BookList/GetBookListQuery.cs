@@ -5,10 +5,23 @@ namespace BookTracker.Api.Application.BookList;
 
 public class GetBookListQuery(AppDbContext dbContext)
 {
-    public async Task<IReadOnlyList<BookInfo>> Execute()
+    private const int DefaultPage = 1;
+    private const int DefaultPageSize = 10;
+    private const int MinPage = 1;
+    private const int MaxPageSize = 50;
+
+    public async Task<PagedResult<BookInfo>> Execute(GetBookListRequest request)
     {
-        return await dbContext.Books
+        var page = Math.Max(1, request.Page ?? DefaultPage);
+        var pageSize = Math.Clamp(request.PageSize ?? DefaultPageSize, MinPage, MaxPageSize);
+
+        var totalItems = await dbContext.Books.CountAsync();
+
+        var books = await dbContext.Books
             .AsNoTracking()
+            .OrderBy(book => book.Id)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .Select(book =>
                 new BookInfo
                 {
@@ -17,5 +30,15 @@ public class GetBookListQuery(AppDbContext dbContext)
                     Author = book.Author.Value
                 })
             .ToListAsync();
+
+        return
+            new PagedResult<BookInfo>
+            {
+                Items = books,
+                Page = page,
+                PageSize = pageSize,
+                TotalItems = totalItems,
+                TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize)
+            };
     }
 }

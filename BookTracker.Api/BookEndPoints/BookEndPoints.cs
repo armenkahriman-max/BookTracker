@@ -23,9 +23,12 @@ public static class BookEndpoints
         return app;
     }
 
-    public static async Task<IResult> GetAllBooks(GetBookListQuery query)
+    public static async Task<IResult> GetAllBooks(
+     [AsParameters] GetBookListRequest request,
+     GetBookListQuery query)
     {
-        var books = await query.Execute();
+        var books = await query.Execute(request);
+
         return Results.Ok(books);
     }
 
@@ -77,24 +80,24 @@ public static class BookEndpoints
         }
     }
 
-   public static async Task<IResult> DeleteBook(
-    int id,
-    DeleteBookCommandHandler handler)
-{
-    try
+    public static async Task<IResult> DeleteBook(
+     int id,
+     DeleteBookCommandHandler handler)
     {
-        var deleted = await handler.Execute(id);
-
-        if (!deleted)
+        try
         {
-            return Results.NotFound();
-        }
+            var deleted = await handler.Execute(id);
 
-        return Results.NoContent();
+            if (!deleted)
+            {
+                return Results.NotFound();
+            }
+
+            return Results.NoContent();
+        }
+        catch (DomainException exception)
+        {
+            return Results.BadRequest(new { error = exception.Message });
+        }
     }
-    catch (DomainException exception)
-    {
-        return Results.BadRequest(new { error = exception.Message });
-    }
-}
 }

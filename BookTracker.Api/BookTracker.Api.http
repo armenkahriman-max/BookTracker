@@ -52,3 +52,9 @@ GET http://localhost:5089/books/6
 ###
 
 GET http://localhost:5089/books/9999
+
+### Get Books Page 1
+GET http://localhost:5089/books?page=1&pageSize=10
+
+### Get Books Page 2
+GET http://localhost:5089/books?page=2&pageSize=10

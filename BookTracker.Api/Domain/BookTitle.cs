@@ -1,6 +1,6 @@
 namespace BookTracker.Api.Domain;
 
-public sealed record BookTitle
+public record BookTitle
 {
     public const int MaxLength = 100;
 
@@ -21,6 +21,11 @@ public sealed record BookTitle
         }
 
         Value = cleaned;
+    }
+
+    public static implicit operator string(BookTitle title)
+    {
+        return title.Value;
     }
 
     public override string ToString()

@@ -3,6 +3,8 @@ using BookTracker.Api.Application.BookList;
 using BookTracker.Api.Application;
 using BookTracker.Api.Domain;
 using System.Net;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.DataProtection.KeyManagement.Internal;
 
 
 namespace BookTracker.Api.Tests.IntegrationTests.BookList;
@@ -102,5 +104,121 @@ public class BookListTests : IntegrationTest
         Assert.Equal(10, result.PageSize);
         Assert.Equal(1, result.TotalItems);
         Assert.Equal(1, result.TotalPages);
+    }
+
+    [Fact]
+    public async Task GetBooksCanSearchByTitle()
+    {
+        Writer.Seed(db =>
+        {
+            db.Books.AddRange(
+                new Book
+                {
+                    Title = new BookTitle("Dune"),
+                    Author = new AuthorName("Frank Herbert"),
+                    Year = 1965
+                },
+                new Book
+                {
+                    Title = new BookTitle("The Big Sleep"),
+                    Author = new AuthorName("Raymond Chandler"),
+                    Year = 1939
+                });
+        });
+
+        var response = await Client.GetAsync("/books?search=dune");
+
+        var result = await response.ReadJsonAs<PagedResult<BookInfo>>(HttpStatusCode.OK);
+
+        var book = Assert.Single(result.Items);
+
+        Assert.Equal("Dune", book.Title);
+        Assert.Equal("Frank Herbert", book.Author);
+        Assert.Equal(1, result.TotalItems);
+        Assert.Equal(1, result.TotalPages);
+    }
+
+    [Fact]
+    public async Task GetBooksAppliesPagingAfterSearch()
+    {
+        Writer.Seed(db =>
+        {
+            db.Books.AddRange(
+                new Book
+                {
+                    Title = new BookTitle("Dune"),
+                    Author = new AuthorName("Frank Herbert"),
+                    Year = 1965
+                },
+                new Book
+                {
+                    Title = new BookTitle("Dune Messiah"),
+                    Author = new AuthorName("Frank Herbert"),
+                    Year = 1969
+                },
+                new Book
+                {
+                    Title = new BookTitle("The Big Sleep"),
+                    Author = new AuthorName("Raymond Chandler"),
+                    Year = 1939
+                });
+        });
+
+        var response = await Client.GetAsync("/books?search=dune&page=2&pageSize=1");
+
+        var result = await response.ReadJsonAs<PagedResult<BookInfo>>(HttpStatusCode.OK);
+
+        var book = Assert.Single(result.Items);
+
+        Assert.Equal("Dune Messiah", book.Title);
+        Assert.Equal(2, result.Page);
+        Assert.Equal(1, result.PageSize);
+        Assert.Equal(2, result.TotalItems);
+        Assert.Equal(2, result.TotalPages);
+    }
+
+    [Fact]
+    public async Task GetBooks_ReturnsEmptyList_WhenNoBookExists()
+    {
+        var response = await Client.GetAsync("/books");
+
+        var result = await response.ReadJsonAs<PagedResult<BookInfo>>(HttpStatusCode.OK);
+
+        Assert.NotNull(result);
+        Assert.Empty(result.Items);
+        Assert.Equal(0, result.TotalItems);
+        Assert.Equal(0, result.TotalPages);
+        Assert.Equal(1, result.Page);
+        Assert.Equal(10, result.PageSize);
+    }
+
+    [Fact]
+    public async Task GetBooks_ReturnsEmptyList_WhenSearchHasNoMatch()
+    {
+        Writer.Seed(db =>
+        {
+            db.Books.AddRange(
+                new Book
+                {
+                    Title = new BookTitle("Dune"),
+                    Author = new AuthorName("Frank Herbert"),
+                    Year = 1965
+                },
+                new Book
+                {
+                    Title = new BookTitle("The Big Sleep"),
+                    Author = new AuthorName("Raymond Chandler"),
+                    Year = 1939
+                });
+        });
+        var response = await Client.GetAsync("/books?search=nonexistentbooktitlexyz123");
+        var result = await response.ReadJsonAs<PagedResult<BookInfo>>(HttpStatusCode.OK);
+
+        Assert.NotNull(result);
+        Assert.Empty(result.Items);
+        Assert.Equal(0, result.TotalItems);
+        Assert.Equal(0, result.TotalPages);
+        Assert.Equal(1, result.Page);
+        Assert.Equal(10, result.PageSize);
     }
 }

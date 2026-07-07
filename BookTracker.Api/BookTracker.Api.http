@@ -58,3 +58,9 @@ GET http://localhost:5089/books?page=1&pageSize=10
 
 ### Get Books Page 2
 GET http://localhost:5089/books?page=2&pageSize=10
+
+### Search Books
+GET http://localhost:5089/books?search=octopus
+
+### Search Books With Paging
+GET http://localhost:5089/books?search=octopus&page=1&pageSize=5

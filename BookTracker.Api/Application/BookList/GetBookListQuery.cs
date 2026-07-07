@@ -15,10 +15,20 @@ public class GetBookListQuery(AppDbContext dbContext)
         var page = Math.Max(1, request.Page ?? DefaultPage);
         var pageSize = Math.Clamp(request.PageSize ?? DefaultPageSize, MinPage, MaxPageSize);
 
-        var totalItems = await dbContext.Books.CountAsync();
+        var query = dbContext.Books.AsNoTracking();
 
-        var books = await dbContext.Books
-            .AsNoTracking()
+        if (!string.IsNullOrWhiteSpace(request.Search))
+        {
+            var search = $"%{request.Search.Trim()}%";
+
+            query = query.Where(book =>
+                EF.Functions.Like((string)book.Title, search) ||
+                EF.Functions.Like((string)book.Author, search));
+        }
+
+        var totalItems = await query.CountAsync();
+
+        var books = await query
             .OrderBy(book => book.Id)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)

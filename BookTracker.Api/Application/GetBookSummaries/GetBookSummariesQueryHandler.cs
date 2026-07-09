@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BookTracker.Api.Application.GetBookSummaries;
 
-public class GetBookSummariesQueryHandler(AppDbContext dbContext)
+public class GetBookSummariesQueryHandler(AppDbContext dbContext) : IHandler
 {
     private const int DefaultPage = 1;
     private const int DefaultPageSize = 10;

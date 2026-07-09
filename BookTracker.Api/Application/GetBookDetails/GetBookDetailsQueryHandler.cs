@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BookTracker.Api.Application.GetBookDetails;
 
-public class GetBookDetailsQueryHandler(AppDbContext dbContext)
+public class GetBookDetailsQueryHandler(AppDbContext dbContext) : IHandler
 {
     public async Task<GetBookDetailsResponse?> Execute(int id)
     {

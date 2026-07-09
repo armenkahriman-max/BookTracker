@@ -1,6 +1,6 @@
-namespace BookTracker.Api.Application.GetBookById;
+namespace BookTracker.Api.Application.GetBookDetails;
 
-public class BookDetails
+public class GetBookDetailsResponse
 {
     public int Id { get; set; }
     public required string Title { get; set; }

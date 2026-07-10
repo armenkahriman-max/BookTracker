@@ -23,6 +23,7 @@ public static class WebApplicationExtensions
         }
 
         app.MapBookEndpoints();
+        app.MapMemberEndpoints();
 
         return app;
     }

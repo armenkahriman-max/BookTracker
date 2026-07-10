@@ -2,7 +2,7 @@ using System.Net;
 using BookTracker.Api.Application.GetBookDetails;
 using BookTracker.Api.Domain;
 
-namespace BookTracker.Api.Tests.IntegrationTests.GetBookDetails;
+namespace BookTracker.Api.Tests.IntegrationTests.GetBookByIdTests;
 
 public class GetBookByIdTests : IntegrationTest
 {

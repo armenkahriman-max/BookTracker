@@ -1,0 +1,41 @@
+using System.Net;
+using BookTracker.Api.Domain;
+using BookTracker.Api.Domain.Members;
+
+namespace BookTracker.Api.Tests.IntegrationTests.DeleteMember;
+
+public class DeleteMember : IntegrationTest
+{
+
+    [Fact]
+    public async Task DeleteMemberRemovesMember()
+    {
+        var writer = Writer;
+
+        writer.Seed(db =>
+        {
+            db.Members.Add(
+                new Member
+                {
+                    Id = 1,
+                    Name = new MemberName("Chung Lee"),
+                    Email = new MemberEmail("Chung@gmail.com")
+                });
+
+
+        });
+        var response = await Client.DeleteAsync("/members/1");
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+
+        var member = Reader.Query(db => db.Members.Find(1));
+
+        Assert.Null(member);
+    }
+
+     [Fact]
+     public async Task DeleteMemberReturnsNotFoundWhenMemberDoesNotExist()
+    {
+        var response = await Client.DeleteAsync("/members/9999");
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+}

@@ -7,9 +7,9 @@ POST http://localhost:5089/books
 Content-Type: application/json
 
 {
-  "title": "Dune",
-  "author": "Frank Herbert",
-  "year": 1965
+   "title": "Octopus Garden",
+  "author": "The Beatles",
+  "year": 1966
 }
 
 ###
@@ -24,7 +24,7 @@ DELETE http://localhost:5089/books/9999
 ###
 
 # Update Book
-PUT http://localhost:5089/books/6
+PUT http://localhost:5089/books/3
 Content-Type: application/json
 
 {
@@ -47,7 +47,7 @@ Content-Type: application/json
 ###
 
 # Get Book by Id
-GET http://localhost:5089/books/6
+GET http://localhost:5089/books/3
 
 ###
 
@@ -63,7 +63,7 @@ GET http://localhost:5089/books?page=2&pageSize=10
 GET http://localhost:5089/books?search=octopus
 
 ### Search Books With Paging
-GET http://localhost:5089/books?search=octopus&page=1&pageSize=5
+GET http://localhost:5089/books?search=octopus&page=1&pageSize=1
 
 ### Get Members
 GET http://localhost:5089/members
@@ -78,10 +78,10 @@ Content-Type: application/json
 }
 
 ### Get Member Details
-GET http://localhost:5089/members/1
+GET http://localhost:5089/members/7
 
 ### Update Member
-PUT http://localhost:5089/members/1
+PUT http://localhost:5089/members/7
 Content-Type: application/json
 
 {
@@ -90,4 +90,4 @@ Content-Type: application/json
 }
 
 ### Delete Member
-DELETE http://localhost:5089/members/1
+DELETE http://localhost:5089/members/7

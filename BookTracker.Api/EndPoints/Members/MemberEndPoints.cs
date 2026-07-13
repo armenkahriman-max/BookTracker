@@ -20,7 +20,7 @@ public static class MemberEndPoints
         return app;
     }
     public static async Task<IResult> GetMemberSummaries(
-        [AsParameters] GetMemberSummeriessRequest request,
+        [AsParameters] GetMemberSummariesRequest request,
         GetMemberSummariesQueryHandler query)
     {
         var members = await query.Execute(request);
@@ -76,7 +76,7 @@ public static class MemberEndPoints
 
     public static async Task<IResult> DeleteMember(
         int id,
-    DeleteBookCommandHandler handler)
+    DeleteMemberCommandHandler handler)
     {
         try
         {

@@ -11,7 +11,7 @@ public class GetMemberSummariesQueryHandler(AppDbContext dbContext) : IHandler
     private const int MinPage = 1;
     private const int MaxPageSize = 50;
 
-    public async Task<PagedResult<MemberSummary>> Execute(GetMemberSummeriessRequest request)
+    public async Task<PagedResult<MemberSummary>> Execute(GetMemberSummariesRequest request)
     {
         var page = Math.Max(1, request.Page ?? DefaultPage);
         var pageSize = Math.Clamp(request.PageSize ?? DefaultPageSize, MinPage, MaxPageSize);

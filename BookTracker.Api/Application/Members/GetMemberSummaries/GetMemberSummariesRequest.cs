@@ -1,6 +1,6 @@
 namespace BookTracker.Api.Application.GetMemberSummaries;
 
-public class GetMemberSummeriessRequest
+public class GetMemberSummariesRequest
 {
     public int? Page { get; set; }
     public int? PageSize { get; set; }

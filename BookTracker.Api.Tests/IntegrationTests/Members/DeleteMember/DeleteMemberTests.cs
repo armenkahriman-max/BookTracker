@@ -32,10 +32,32 @@ public class DeleteMember : IntegrationTest
         Assert.Null(member);
     }
 
-     [Fact]
-     public async Task DeleteMemberReturnsNotFoundWhenMemberDoesNotExist()
+    [Fact]
+    public async Task DeleteMemberReturnsNotFoundWhenMemberDoesNotExist()
     {
         var response = await Client.DeleteAsync("/members/9999");
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task DeleteMemberReturnsNotFoundAfterDeletingMember()
+    {
+        Writer.Seed(db =>
+        {
+            db.Members.Add(new Member
+            {
+                Id = 1,
+                Name = new MemberName("Ada Lovelace"),
+                Email = new MemberEmail("ada@example.com")
+            });
+        });
+
+        var deleteResponse = await Client.DeleteAsync("/members/1");
+
+        await deleteResponse.ShouldHaveStatusCode(HttpStatusCode.NoContent);
+
+        var getResponse = await Client.GetAsync("/members/1");
+
+        await getResponse.ShouldHaveStatusCode(HttpStatusCode.NotFound);
     }
 }

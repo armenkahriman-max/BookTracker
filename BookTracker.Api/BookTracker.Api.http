@@ -64,3 +64,30 @@ GET http://localhost:5089/books?search=octopus
 
 ### Search Books With Paging
 GET http://localhost:5089/books?search=octopus&page=1&pageSize=5
+
+### Get Members
+GET http://localhost:5089/members
+
+### Create Member
+POST http://localhost:5089/members
+Content-Type: application/json
+
+{
+  "name": "Ada Lovelace",
+  "email": "ada@example.com"
+}
+
+### Get Member Details
+GET http://localhost:5089/members/1
+
+### Update Member
+PUT http://localhost:5089/members/1
+Content-Type: application/json
+
+{
+  "name": "Ada Byron",
+  "email": "ada.byron@example.com"
+}
+
+### Delete Member
+DELETE http://localhost:5089/members/1

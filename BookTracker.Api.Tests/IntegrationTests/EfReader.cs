@@ -11,4 +11,9 @@ public class EfReader(IServiceProvider services)
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         return query(db);
     }
+
+    internal object Get<T>()
+    {
+        throw new NotImplementedException();
+    }
 }

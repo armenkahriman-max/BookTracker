@@ -5,6 +5,7 @@ using BookTracker.Api.Application.GetMemberDetails;
 using BookTracker.Api.Application.UpdateMember;
 using BookTracker.Api.Domain;
 using BookTracker.Api.Application.GetMemberSummariesQueryHandler;
+using BookTracker.Api.Application.Members;
 namespace BookTracker.Api.Endpoints;
 
 public static class MemberEndPoints
@@ -46,10 +47,13 @@ public static class MemberEndPoints
             var response = await handler.Execute(request);
             return Results.Created($"/members/{response.Id}", response);
         }
+        catch (MemberEmailAlreadyExistsException exception)
+        {
+            return Results.Conflict(new { error = exception.Message });
+        }
         catch (DomainException exception)
         {
             return Results.BadRequest(new { error = exception.Message });
-
         }
     }
 
@@ -67,6 +71,10 @@ public static class MemberEndPoints
             }
 
             return Results.NoContent();
+        }
+        catch (MemberEmailAlreadyExistsException exception)
+        {
+            return Results.Conflict(new { error = exception.Message });
         }
         catch (DomainException exception)
         {
@@ -91,6 +99,6 @@ public static class MemberEndPoints
         {
             return Results.BadRequest(new { error = exception.Message });
         }
+
     }
 }
-

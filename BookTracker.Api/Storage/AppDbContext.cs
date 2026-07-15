@@ -12,7 +12,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        
+
         modelBuilder.Entity<Book>(book =>
         {
             book.Property(b => b.Title)
@@ -28,9 +28,12 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
                 .HasMaxLength(AuthorName.MaxLength);
         });
 
-        
+
         modelBuilder.Entity<Member>(member =>
         {
+            member.HasIndex(current => current.Email)
+      .IsUnique();
+
             member.Property(m => m.Email)
                 .HasConversion(
                     email => email.Value,

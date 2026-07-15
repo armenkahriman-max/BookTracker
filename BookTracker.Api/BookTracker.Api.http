@@ -91,3 +91,13 @@ Content-Type: application/json
 
 ### Delete Member
 DELETE http://localhost:5089/members/7
+
+### Create member with credentials
+POST http://localhost:5089/members
+Content-Type: application/json
+
+{
+  "name": "Ada Lovelace",
+  "email": "ada2@example.com",
+  "password": "analytical-engine"
+}

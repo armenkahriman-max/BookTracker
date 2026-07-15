@@ -14,7 +14,7 @@ public record MemberEmail
             throw new DomainException("Email is required.");
         }
 
-        var cleaned = value.Trim();
+        var cleaned = value.Trim().ToLowerInvariant();
 
         if (!cleaned.Contains("@"))
         {
@@ -24,7 +24,7 @@ public record MemberEmail
 
         if (cleaned.Length > MaxLength)
         {
-            throw new DomainException($"Email cannot contain more then {MaxLength} characters.");
+            throw new DomainException($"Email cannot contain more than {MaxLength} characters.");
         }
 
         Value = cleaned;

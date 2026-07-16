@@ -23,6 +23,7 @@ public class UpdateMember : IntegrationTest
                 {
                     Name = new MemberName("Donner"),
                     Email = new MemberEmail("Chugns@gmail.com"),
+                    PasswordHash = "test-password-hash"
                 });
         });
 
@@ -31,6 +32,7 @@ public class UpdateMember : IntegrationTest
             {
                 Name = "Dean",
                 Email = "Chugns@gmail.com",
+
 
             };
 
@@ -47,7 +49,7 @@ public class UpdateMember : IntegrationTest
 
         Assert.NotNull(member);
         Assert.Equal("Dean", member.Name.Value);
-        Assert.Equal("Chugns@gmail.com", member.Email.Value);
+        Assert.Equal("chugns@gmail.com", member.Email.Value);
 
     }
 
@@ -80,7 +82,8 @@ public class UpdateMember : IntegrationTest
             db.Members.Add(new Member
             {
                 Name = new MemberName("John Doe"),
-                Email = new MemberEmail("john@example.com")
+                Email = new MemberEmail("john@example.com"),
+                PasswordHash = "test-password-hash"
             });
         });
 
@@ -95,5 +98,62 @@ public class UpdateMember : IntegrationTest
         await response.ShouldHaveStatusCode(HttpStatusCode.BadRequest);
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+    [Fact]
+    public async Task PutMemberReturnsConflictWhenEmailAlreadyExists()
+    {
+        Writer.Seed(db =>
+        {
+            db.Members.AddRange(
+                new Member
+                {
+                    Id = 1,
+                    Name = new MemberName("Ada Lovelace"),
+                    Email = new MemberEmail("ada@example.com"),
+                    PasswordHash = "test-password-hash"
+                },
+                new Member
+                {
+                    Id = 2,
+                    Name = new MemberName("Bob Smith"),
+                    Email = new MemberEmail("bob@example.com"),
+                    PasswordHash = "test-password-hash"
+                });
+        });
+
+        var request = new UpdateMemberRequest
+        {
+            Name = "Ada Lovelace",
+            Email = "bob@example.com"
+        };
+
+        var response = await Client.PutAsJsonAsync("/members/1", request);
+
+        await response.ShouldHaveStatusCode(HttpStatusCode.Conflict);
+    }
+
+    [Fact]
+    public async Task PutMemberAllowsKeepingOwnEmail()
+    {
+        Writer.Seed(db =>
+        {
+            db.Members.Add(new Member
+            {
+                Id = 1,
+                Name = new MemberName("Ada Lovelace"),
+                Email = new MemberEmail("ada@example.com"),
+                PasswordHash = "test-password-hash"
+            });
+        });
+
+        var request = new UpdateMemberRequest
+        {
+            Name = "Ada Updated",
+            Email = "ADA@EXAMPLE.COM"
+        };
+
+        var response = await Client.PutAsJsonAsync("/members/1", request);
+
+        await response.ShouldHaveStatusCode(HttpStatusCode.NoContent);
     }
 }

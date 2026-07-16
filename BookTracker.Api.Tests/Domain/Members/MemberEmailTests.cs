@@ -33,7 +33,7 @@ public class MemberEmailTests
 
         var exception = Assert.Throws<DomainException>(() =>
         new MemberEmail(tooLong));
-        Assert.Equal("Email cannot contain more then 200 characters.", exception.Message);
+        Assert.Equal("Email cannot contain more than 200 characters.", exception.Message);
     }
     [Fact]
     public void MemberEmailRejectsTextWithoutAtSymbol()
@@ -44,5 +44,12 @@ public class MemberEmailTests
         Assert.Equal("Email must contain an @ symbol.", exception.Message);
 
 
+    }
+    [Fact]
+    public void MemberEmailNormalizesValue()
+    {
+        var email = new MemberEmail("  Ada@Example.com  ");
+
+        Assert.Equal("ada@example.com", email.Value);
     }
 }

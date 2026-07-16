@@ -17,7 +17,8 @@ public class GetMemberDetailsTests : IntegrationTest
                 new Member
                 {
                     Name = new MemberName("Chung"),
-                    Email = new MemberEmail("chung@gmail.com")
+                    Email = new MemberEmail("chung@gmail.com"),
+                    PasswordHash = "test-password-hash"
                 });
         });
         var response = await Client.GetAsync("/members/1");

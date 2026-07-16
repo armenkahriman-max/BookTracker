@@ -18,7 +18,8 @@ public class MemberListTest : IntegrationTest
                 new Member
                 {
                     Name = new MemberName("Chungy"),
-                    Email = new MemberEmail("chungy@gmail.com")
+                    Email = new MemberEmail("chungy@gmail.com"),
+                    PasswordHash = "test-password-hash"
                 });
 
         });
@@ -52,13 +53,16 @@ public class MemberListTest : IntegrationTest
             db.Members.Add(new Member
             {
                 Name = new MemberName("Chungy"),
-                Email = new MemberEmail("Chungy@example.com")
+                Email = new MemberEmail("Chungy@example.com"),
+                PasswordHash = "test-password-hash"
             });
 
             db.Members.Add(new Member
             {
                 Name = new MemberName("Doe"),
-                Email = new MemberEmail("Doe@example.com")
+                Email = new MemberEmail("Doe@example.com"),
+                PasswordHash = "test-password-hash"
+                
             });
         });
 
@@ -78,13 +82,15 @@ public class MemberListTest : IntegrationTest
                 new Member
                 {
                     Name = new MemberName("Mark"),
-                    Email = new MemberEmail("Mark@example.com")
+                    Email = new MemberEmail("Mark@example.com"),
+                    PasswordHash = "test-password-hash"
                 });
 
             db.Members.Add(new Member
             {
                 Name = new MemberName("Jane"),
-                Email = new MemberEmail("jane@example.com")
+                Email = new MemberEmail("jane@example.com"),
+                PasswordHash = "test-password-hash"
             });
         });
 
@@ -104,17 +110,20 @@ public class MemberListTest : IntegrationTest
                 new Member
                 {
                     Name = new MemberName("Joe One"),
-                    Email = new MemberEmail("joe1@gmail.com")
+                    Email = new MemberEmail("joe1@gmail.com"),
+                    PasswordHash = "test-password-hash"
                 },
                 new Member
                 {
                     Name = new MemberName("Joe Two"),
-                    Email = new MemberEmail("joe2@gmail.com")
+                    Email = new MemberEmail("joe2@gmail.com"),
+                    PasswordHash = "test-password-hash"
                 },
                 new Member
                 {
                     Name = new MemberName("Frank"),
-                    Email = new MemberEmail("frank@gmail.com")
+                    Email = new MemberEmail("frank@gmail.com"),
+                    PasswordHash = "test-password-hash"
                 });
         });
 

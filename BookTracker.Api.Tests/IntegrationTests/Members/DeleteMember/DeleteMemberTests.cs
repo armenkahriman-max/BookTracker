@@ -19,7 +19,8 @@ public class DeleteMember : IntegrationTest
                 {
                     Id = 1,
                     Name = new MemberName("Chung Lee"),
-                    Email = new MemberEmail("Chung@gmail.com")
+                    Email = new MemberEmail("Chung@gmail.com"),
+                    PasswordHash = "test-password-hash"
                 });
 
 
@@ -48,7 +49,8 @@ public class DeleteMember : IntegrationTest
             {
                 Id = 1,
                 Name = new MemberName("Ada Lovelace"),
-                Email = new MemberEmail("ada@example.com")
+                Email = new MemberEmail("ada@example.com"),
+                PasswordHash = "test-password-hash"
             });
         });
 

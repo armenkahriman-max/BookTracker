@@ -101,3 +101,26 @@ Content-Type: application/json
   "email": "ada2@example.com",
   "password": "analytical-engine"
 }
+
+### Create member
+POST http://localhost:5089/members
+Content-Type: application/json
+
+{
+  "name": "Ada Lovelace",
+  "email": "ada@example.com",
+  "password": "analytical-engine"
+}
+
+### Login
+POST http://localhost:5089/auth/login
+Content-Type: application/json
+
+{
+  "email": "ada@example.com",
+  "password": "analytical-engine"
+}
+
+### Current member
+GET http://localhost:5089/auth/me
+Authorization: Bearer paste-token-here

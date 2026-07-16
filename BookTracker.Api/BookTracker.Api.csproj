@@ -1,12 +1,14 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>4314081c-4608-437f-b583-ef1f236f38b8</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.*" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.25" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.*" />
     <PackageReference Include="QuickFuzzr" Version="0.1.9" />

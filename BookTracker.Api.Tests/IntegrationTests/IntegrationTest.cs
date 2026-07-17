@@ -32,34 +32,50 @@ public abstract class IntegrationTest : IDisposable
     }
 
     protected async Task<int> AuthenticateAsMember(
+        MemberRole role = MemberRole.Member,
         string name = "Ada Lovelace",
         string email = "ada@example.com",
         string password = "analytical-engine")
     {
-        var member = new Member
+        var member =
+        new Member
         {
             Name = new MemberName(name),
             Email = new MemberEmail(email),
-            PasswordHash = string.Empty
+            PasswordHash = string.Empty,
+            Role = role
         };
 
-        var passwordHasher = new PasswordHasher<Member>();
-        member.PasswordHash = passwordHasher.HashPassword(member, password);
+        var passwordHasher =
+         new PasswordHasher<Member>();
+        member.PasswordHash =
+         passwordHasher.HashPassword(
+            member,
+            password);
 
-        Writer.Seed(db => db.Members.Add(member));
+        Writer.Seed(db =>
+          db.Members.Add(member));
 
-        var request = new LoginRequest
+        var request = 
+           new LoginRequest
         {
             Email = email,
             Password = password
         };
 
-        var response = await Client.PostAsJsonAsync("/auth/login", request);
+        var response = 
+        await Client.PostAsJsonAsync(
+            "/auth/login",
+             request);
 
-        var login = await response.ReadJsonAs<LoginResponse>(HttpStatusCode.OK);
+        var login =
+         await response.ReadJsonAs<LoginResponse>(
+            HttpStatusCode.OK);
 
         Client.DefaultRequestHeaders.Authorization =
-            new AuthenticationHeaderValue("Bearer", login.AccessToken);
+            new AuthenticationHeaderValue(
+                "Bearer", 
+                login.AccessToken);
 
         return member.Id;
     }

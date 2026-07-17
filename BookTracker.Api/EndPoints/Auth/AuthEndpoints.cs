@@ -1,4 +1,4 @@
-    using System.Security.Claims;
+using System.Security.Claims;
 using BookTracker.Api.Application.Auth.GetCurrentMember;
 using BookTracker.Api.Application.Auth.Login;
 
@@ -44,13 +44,17 @@ public static class AuthEndpoints
         var email =
             user.FindFirst(ClaimTypes.Email)!.Value;
 
+        var role =
+            user.FindFirst(ClaimTypes.Role)!.Value;
+
         return
             Results.Ok(
                 new CurrentMemberResponse
                 {
                     Id = int.Parse(id),
                     Name = name,
-                    Email = email
+                    Email = email,
+                    Role = role
                 });
     }
 }

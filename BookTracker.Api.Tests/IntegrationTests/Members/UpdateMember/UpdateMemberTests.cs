@@ -80,7 +80,10 @@ public class UpdateMember : IntegrationTest
     [Fact]
     public async Task PutMemberAllowsKeepingOwnEmail()
     {
-        var memberId = await AuthenticateAsMember("Ada Lovelace", "ada@example.com");
+        var memberId = await AuthenticateAsMember(
+            MemberRole.Member,
+            "Ada Lovelace",
+            "ada@example.com");
 
         var request = new UpdateMemberRequest
         {

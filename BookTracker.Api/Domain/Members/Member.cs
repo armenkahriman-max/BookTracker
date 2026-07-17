@@ -7,5 +7,8 @@ public class Member
     public required MemberName Name { get; set; }
 
     public required MemberEmail Email { get; set; }
-    public string PasswordHash { get; set; } = string.Empty;
+
+    public required string PasswordHash { get; set; }
+
+    public MemberRole Role { get; set; } = MemberRole.Member;
 }

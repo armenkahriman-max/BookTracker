@@ -19,15 +19,18 @@ public class UpdateMemberCommandHandler(IMemberRepository memberRepository) : IH
             throw new MemberEmailAlreadyExistsException();
         }
 
-        var member = new Member
+        var existingMember = await memberRepository.GetByIdAsync(id);
+        if (existingMember is null)
         {
-            Id = id,
-            Name = name,
-            Email = email,
-        };
+            return false;
+        }
 
-        return await memberRepository.UpdateAsync(member);
+        
+        existingMember.Name = name;
+        existingMember.Email = email;
 
-
+        return await memberRepository.UpdateAsync(existingMember);
     }
+
+
 }

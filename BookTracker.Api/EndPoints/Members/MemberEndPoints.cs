@@ -6,6 +6,8 @@ using BookTracker.Api.Application.GetMemberSummariesQueryHandler;
 using BookTracker.Api.Application.Members;
 using BookTracker.Api.Application.UpdateMember;
 using BookTracker.Api.Domain;
+using BookTracker.Api.Domain.Members;
+using BookTracker.Api.Security;
 using System.Security.Claims;
 
 namespace BookTracker.Api.Endpoints;
@@ -14,8 +16,14 @@ public static class MemberEndPoints
 {
     public static IEndpointRouteBuilder MapMemberEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapGet("/members", GetMemberSummaries);
-        app.MapGet("/members/{id:int}", GetMemberDetails);
+        app.MapGet("/members", GetMemberSummaries)
+        .RequireAuthorization(
+         AuthorizationPolicies.ManageMembers);
+
+        app.MapGet("/members/{id:int}", GetMemberDetails)
+        .RequireAuthorization(
+        AuthorizationPolicies.ManageMembers);
+
         app.MapPost("/members", CreateMember);
 
         app.MapPut("/members/{id:int}", UpdateMember)
@@ -27,7 +35,7 @@ public static class MemberEndPoints
         return app;
     }
 
-    
+
     public static async Task<IResult> GetMemberSummaries(
         [AsParameters] GetMemberSummariesRequest request,
         GetMemberSummariesQueryHandler query)
@@ -42,7 +50,7 @@ public static class MemberEndPoints
         return member is null ? Results.NotFound() : Results.Ok(member);
     }
 
-    
+
     public static async Task<IResult> CreateMember(
         CreateMemberRequest request,
         CreateMemberCommandHandler handler)
@@ -69,7 +77,7 @@ public static class MemberEndPoints
         ClaimsPrincipal user,
         UpdateMemberCommandHandler handler)
     {
-        if (!IsCurrentMember(user, id))
+        if (!CanManageMember(user, id))
         {
             return Results.Forbid();
         }
@@ -98,7 +106,7 @@ public static class MemberEndPoints
         ClaimsPrincipal user,
         DeleteMemberCommandHandler handler)
     {
-        if (!IsCurrentMember(user, id))
+        if (!CanManageMember(user, id))
         {
             return Results.Forbid();
         }
@@ -121,5 +129,24 @@ public static class MemberEndPoints
         var claim = user.FindFirstValue(ClaimTypes.NameIdentifier);
         return int.TryParse(claim, out var currentMemberId)
                && currentMemberId == memberId;
+    }
+
+    private static bool CanManageMember(
+    ClaimsPrincipal user,
+    int memberId)
+    {
+        if (user.IsInRole(nameof(MemberRole.Administrator)))
+        {
+            return true;
+        }
+
+        var claim =
+            user.FindFirstValue(
+                ClaimTypes.NameIdentifier);
+
+        return int.TryParse(
+                claim,
+                out var currentMemberId)
+            && currentMemberId == memberId;
     }
 }

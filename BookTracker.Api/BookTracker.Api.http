@@ -117,13 +117,13 @@ POST http://localhost:5089/auth/login
 Content-Type: application/json
 
 {
-  "email": "ada@example.com",
+  "email": "ada2@example.com",
   "password": "analytical-engine"
 }
 
 ### Current member
 GET http://localhost:5089/auth/me
-Authorization: Bearer paste-token-here
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiQWRhIExvdmVsYWNlIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiYWRhMkBleGFtcGxlLmNvbSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6Ik1lbWJlciIsImV4cCI6MTc4NDMwMDk5OCwiaXNzIjoiQm9va1RyYWNrZXIiLCJhdWQiOiJCb29rVHJhY2tlciJ9.ig5p6uzvHsZ8ybHg1GaHL9d8FuEf0VNuXEZYowbseMs
 
 ### Create member
 POST http://localhost:5089/members
@@ -140,7 +140,7 @@ POST http://localhost:5089/auth/login
 Content-Type: application/json
 
 {
-  "email": "ada@example.com",
+  "email": "Ida@example.com",
   "password": "analytical-engine"
 }
 
@@ -164,3 +164,48 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hc
   "author": "Frank Herbert",
   "year": 1965
 }
+
+### Login as regular member
+POST http://localhost:5089/auth/login
+Content-Type: application/json
+
+{
+  "email": "Ida@example.com",
+  "password": "analytical-engine"
+}
+
+### Regular member tries to create book
+POST http://localhost:5089/books
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjMiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiQWRhIExvdmVsYWNlIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiaWRhQGV4YW1wbGUuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiTWVtYmVyIiwiZXhwIjoxNzg0MzAxNTQ1LCJpc3MiOiJCb29rVHJhY2tlciIsImF1ZCI6IkJvb2tUcmFja2VyIn0.o-QL0BnGqlGY9j_Iq_kMG99vMuG7vWogTTTVZoEtoxo
+
+
+{
+  "title": "Dune",
+  "author": "Frank Herbert",
+  "year": 1965
+}
+
+### Login as administrator
+POST http://localhost:5089/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@booktracker.local",
+  "password": "development-admin-password"
+}
+
+### Administrator creates book
+POST http://localhost:5089/books
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiQm9vayBUcmFja2VyIEFkbWluIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiYWRtaW5AYm9va3RyYWNrZXIubG9jYWwiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbmlzdHJhdG9yIiwiZXhwIjoxNzg0MzAxMjEzLCJpc3MiOiJCb29rVHJhY2tlciIsImF1ZCI6IkJvb2tUcmFja2VyIn0.naq7J5U17I2HYo8Qm-VCDtKJGtM3Bqp_AO0DLUGAnBI
+
+{
+  "title": "Dune",
+  "author": "Frank Herbert",
+  "year": 1965
+}
+
+### Administrator views members
+GET http://localhost:5089/members
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiQm9vayBUcmFja2VyIEFkbWluIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiYWRtaW5AYm9va3RyYWNrZXIubG9jYWwiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbmlzdHJhdG9yIiwiZXhwIjoxNzg0MzAxMjEzLCJpc3MiOiJCb29rVHJhY2tlciIsImF1ZCI6IkJvb2tUcmFja2VyIn0.naq7J5U17I2HYo8Qm-VCDtKJGtM3Bqp_AO0DLUGAnBI

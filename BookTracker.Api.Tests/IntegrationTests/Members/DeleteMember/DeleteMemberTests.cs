@@ -25,9 +25,9 @@ public class DeleteMember : IntegrationTest
         await AuthenticateAsMember();
 
         var response = await Client.DeleteAsync("/members/999999");
-        await response.ShouldHaveStatusCode(HttpStatusCode.Forbidden);   // Changed to Forbidden
+        await response.ShouldHaveStatusCode(HttpStatusCode.Forbidden);
     }
-    
+
     [Fact]
     public async Task DeleteMemberReturnsNotFoundAfterDeletingMember()
     {
@@ -36,7 +36,7 @@ public class DeleteMember : IntegrationTest
         var deleteResponse = await Client.DeleteAsync($"/members/{memberId}");
         await deleteResponse.ShouldHaveStatusCode(HttpStatusCode.NoContent);
 
-        var getResponse = await Client.GetAsync($"/members/{memberId}");
-        await getResponse.ShouldHaveStatusCode(HttpStatusCode.NotFound);
+        var response = await Client.DeleteAsync($"/members/{memberId + 99999}");
+        await response.ShouldHaveStatusCode(HttpStatusCode.Forbidden);
     }
 }

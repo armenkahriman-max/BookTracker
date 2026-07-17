@@ -12,13 +12,14 @@ public class CreateMemberTests : IntegrationTest
     [Fact]
     public async Task PostMemberCreatesMember()
     {
-        var request =
-        new CreateMemberRequest
+        // No authentication needed for registration
+        var request = new CreateMemberRequest
         {
             Name = "Ada Lovelace",
             Email = "ada@example.com",
             Password = "analytical-engine"
         };
+
         var response = await Client.PostAsJsonAsync("/members", request);
 
         var created = await response.ReadJsonAs<CreateMemberResponse>(HttpStatusCode.Created);
@@ -27,14 +28,13 @@ public class CreateMemberTests : IntegrationTest
         Assert.NotNull(created);
         Assert.True(created.Id > 0);
         Assert.Equal("Ada Lovelace", created.Name);
+
         var member = Reader.Query(context => context.Find<Member>(created.Id));
 
         Assert.NotNull(member);
-
         Assert.NotEqual("analytical-engine", member.PasswordHash);
 
         var passwordHasher = new PasswordHasher<Member>();
-
         var result = passwordHasher.VerifyHashedPassword(
             member,
             member.PasswordHash,
@@ -44,19 +44,19 @@ public class CreateMemberTests : IntegrationTest
 
         Assert.Equal("Ada Lovelace", member.Name.Value);
         Assert.Equal("ada@example.com", member.Email.Value);
+        Assert.Equal(MemberRole.Member, member.Role);   // Extra check
     }
+
     [Fact]
     public async Task PostMemberReturnsBadRequestWhenNameOrEmailIsInvalid()
     {
-        var request =
-         new CreateMemberRequest
-         {
-             Name = "  ",
-             Email = "adaexample.com",
-             Password = "analytical-engine"
+        var request = new CreateMemberRequest
+        {
+            Name = "  ",
+            Email = "adaexample.com",
+            Password = "analytical-engine"
+        };
 
-
-         };
         var response = await Client.PostAsJsonAsync("/members", request);
         await response.ShouldHaveStatusCode(HttpStatusCode.BadRequest);
     }
@@ -72,9 +72,9 @@ public class CreateMemberTests : IntegrationTest
         };
 
         var response = await Client.PostAsJsonAsync("/members", request);
-
         await response.ShouldHaveStatusCode(HttpStatusCode.BadRequest);
     }
+
     [Fact]
     public async Task PostMemberReturnsBadRequestWhenPasswordIsTooShort()
     {
@@ -86,9 +86,9 @@ public class CreateMemberTests : IntegrationTest
         };
 
         var response = await Client.PostAsJsonAsync("/members", request);
-
         await response.ShouldHaveStatusCode(HttpStatusCode.BadRequest);
     }
+
     [Fact]
     public async Task PostMemberReturnsConflictWhenEmailAlreadyExists()
     {
@@ -100,7 +100,6 @@ public class CreateMemberTests : IntegrationTest
                 Email = new MemberEmail("ada@example.com"),
                 PasswordHash = "test-password-hash"
             });
-
         });
 
         var request = new CreateMemberRequest
@@ -113,5 +112,37 @@ public class CreateMemberTests : IntegrationTest
         var response = await Client.PostAsJsonAsync("/members", request);
 
         await response.ShouldHaveStatusCode(HttpStatusCode.Conflict);
+    }
+
+    [Fact]
+    public async Task CreateMemberCreatesRegularMember()
+    {
+        var request =
+            new CreateMemberRequest
+            {
+                Name = "Grace Hopper",
+                Email = "grace@example.com",
+                Password = "debugging-moth"
+            };
+
+        var response =
+            await Client.PostAsJsonAsync(
+                "/members",
+                request);
+
+        var created =
+            await response
+                .ReadJsonAs<CreateMemberResponse>(
+                    HttpStatusCode.Created);
+
+        var member =
+            Reader.Query(db =>
+                db.Members.Find(created.Id));
+
+        Assert.NotNull(member);
+
+        Assert.Equal(
+            MemberRole.Member,
+            member.Role);
     }
 }

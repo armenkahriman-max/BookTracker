@@ -7,6 +7,7 @@ using BookTracker.Api.Security;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
+using System.Security.Claims;
 
 namespace BookTracker.Api.Wiring;
 
@@ -86,11 +87,27 @@ public static class WebApplicationBuilderExtensions
                             new SymmetricSecurityKey(
                                 Encoding.UTF8.GetBytes(settings.SigningKey)),
 
+                        NameClaimType = ClaimTypes.Name,
+                        RoleClaimType = ClaimTypes.Role,
+
                         ClockSkew = TimeSpan.Zero
                     };
             });
 
-        builder.Services.AddAuthorization();
+        builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(
+        AuthorizationPolicies.ManageBooks,
+        policy =>
+            policy.RequireRole(
+                nameof(MemberRole.Administrator)));
+
+    options.AddPolicy(
+        AuthorizationPolicies.ManageMembers,
+        policy =>
+            policy.RequireRole(
+                nameof(MemberRole.Administrator)));
+});
     }
     private static readonly Type HandlerMarker = typeof(IHandler);
 

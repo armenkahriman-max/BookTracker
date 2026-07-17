@@ -68,4 +68,66 @@ public class MemberAuthorizationTests : IntegrationTest
         var response = await Client.PutAsJsonAsync($"/members/{otherMemberId}", request);
         await response.ShouldHaveStatusCode(HttpStatusCode.Forbidden);
     }
+
+    [Fact]
+    public async Task MemberListRequiresAuthentication()
+    {
+        var response =
+            await Client.GetAsync("/members");
+
+        await response.ShouldHaveStatusCode(
+            HttpStatusCode.Unauthorized);
+    }
+    [Fact]
+    public async Task RegularMemberCannotViewMemberList()
+    {
+        await AuthenticateAsMember();
+
+        var response =
+            await Client.GetAsync("/members");
+
+        await response.ShouldHaveStatusCode(
+            HttpStatusCode.Forbidden);
+    }
+
+    [Fact]
+    public async Task AdministratorCanViewMemberList()
+    {
+        await AuthenticateAsMember(
+            MemberRole.Administrator);
+
+        var response =
+            await Client.GetAsync("/members");
+
+        await response.ShouldHaveStatusCode(
+            HttpStatusCode.OK);
+    }
+    [Fact]
+    public async Task MemberDetailsRequiresAuthentication()
+    {
+        var response = await Client.GetAsync("/members/1");
+        await response.ShouldHaveStatusCode(HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
+    public async Task RegularMemberCannotViewOtherMemberDetails()
+    {
+        await AuthenticateAsMember();
+
+        var otherMemberId = SeedMember("Grace Hopper", "grace@example.com");
+
+        var response = await Client.GetAsync($"/members/{otherMemberId}");
+        await response.ShouldHaveStatusCode(HttpStatusCode.Forbidden);
+    }
+
+    [Fact]
+    public async Task AdministratorCanViewAnyMemberDetails()
+    {
+        await AuthenticateAsMember(MemberRole.Administrator);
+
+        var otherMemberId = SeedMember("Grace Hopper", "grace@example.com");
+
+        var response = await Client.GetAsync($"/members/{otherMemberId}");
+        await response.ShouldHaveStatusCode(HttpStatusCode.OK);
+    }
 }

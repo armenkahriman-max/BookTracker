@@ -49,4 +49,11 @@ public class EfMemberRepository(AppDbContext dbContext) : IMemberRepository
         return true;
 
     }
+
+    public async Task<Member> GetByIdAsync(int id)
+    {
+         var member = await dbContext.Members.FindAsync(id);
+        if (member== null){throw  new NullReferenceException();}
+        return member;
+    }
 }

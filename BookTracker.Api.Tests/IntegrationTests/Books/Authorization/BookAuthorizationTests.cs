@@ -20,7 +20,7 @@ public class BookAuthorizationTests : IntegrationTest
 
         await response.ShouldHaveStatusCode(HttpStatusCode.Unauthorized);
 
-        // Make sure no book was created
+
         var count = Reader.Query(db => db.Books.Count());
         Assert.Equal(0, count);
     }
@@ -30,5 +30,33 @@ public class BookAuthorizationTests : IntegrationTest
     {
         var response = await Client.GetAsync("/books");
         await response.ShouldHaveStatusCode(HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public async Task RegularMemberCannotCreateBook()
+    {
+        await AuthenticateAsMember();
+
+        var request =
+            new CreateBookRequest
+            {
+                Title = "Dune",
+                Author = "Frank Herbert",
+                Year = 1965
+            };
+
+        var response =
+            await Client.PostAsJsonAsync(
+                "/books",
+                request);
+
+        await response.ShouldHaveStatusCode(
+            HttpStatusCode.Forbidden);
+
+        var count =
+            Reader.Query(db =>
+                db.Books.Count());
+
+        Assert.Equal(0, count);
     }
 }

@@ -12,4 +12,5 @@ public interface IMemberRepository
     Task<bool> EmailExistsAsync(
            MemberEmail email,
            int? memberIdToIgnore = null);
+    Task<Member> GetByIdAsync(int id);
 }

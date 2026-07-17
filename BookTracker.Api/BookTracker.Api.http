@@ -124,3 +124,43 @@ Content-Type: application/json
 ### Current member
 GET http://localhost:5089/auth/me
 Authorization: Bearer paste-token-here
+
+### Create member
+POST http://localhost:5089/members
+Content-Type: application/json
+
+{
+  "name": "Ada Lovelace",
+  "email": "Ida@example.com",
+  "password": "analytical-engine"
+}
+
+### Login
+POST http://localhost:5089/auth/login
+Content-Type: application/json
+
+{
+  "email": "ada@example.com",
+  "password": "analytical-engine"
+}
+
+### Create book without token
+POST http://localhost:5089/books
+Content-Type: application/json
+
+{
+  "title": "Dune",
+  "author": "Frank Herbert",
+  "year": 1965
+}
+
+### Create book with token
+POST http://localhost:5089/books
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiQWRhIExvdmVsYWNlIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiYWRhQGV4YW1wbGUuY29tIiwiZXhwIjoxNzg0Mjg1NTk5LCJpc3MiOiJCb29rVHJhY2tlciIsImF1ZCI6IkJvb2tUcmFja2VyIn0.NAu5t6lxEkZhk-MYTrZ5jEatiwtFncXCIeDOWHKPctA
+
+{
+  "title": "Dune",
+  "author": "Frank Herbert",
+  "year": 1965
+}

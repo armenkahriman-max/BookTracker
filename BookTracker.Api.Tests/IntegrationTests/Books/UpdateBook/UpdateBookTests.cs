@@ -7,11 +7,10 @@ namespace BookTracker.Api.Tests.IntegrationTests.UpdateBook;
 
 public class UpdateBookTests : IntegrationTest
 {
-
-
     [Fact]
     public async Task PutBookUpdatesBook()
     {
+        await AuthenticateAsMember();
         var writer = Writer;
 
         writer.Seed(db =>
@@ -25,21 +24,16 @@ public class UpdateBookTests : IntegrationTest
                 });
         });
 
-        var request =
-            new UpdateBookRequest
-            {
-                Title = "Dune Messiah",
-                Author = "Frank Herbert",
-                Year = 1969
-            };
-
-
+        var request = new UpdateBookRequest
+        {
+            Title = "Dune Messiah",
+            Author = "Frank Herbert",
+            Year = 1969
+        };
 
         var response = await Client.PutAsJsonAsync("/books/1", request);
 
         await response.ShouldHaveStatusCode(HttpStatusCode.NoContent);
-
-        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
 
         var reader = Reader;
         var book = reader.Query(db => db.Books.Find(1));
@@ -53,20 +47,17 @@ public class UpdateBookTests : IntegrationTest
     [Fact]
     public async Task PutBookReturnsNotFoundWhenBookDoesNotExist()
     {
-        var request =
-            new UpdateBookRequest
-            {
-                Title = "Unknown Book",
-                Author = "Unknown Author",
-                Year = 2000
-            };
+        await AuthenticateAsMember();     
 
-
+        var request = new UpdateBookRequest
+        {
+            Title = "Unknown Book",
+            Author = "Unknown Author",
+            Year = 2000
+        };
 
         var response = await Client.PutAsJsonAsync("/books/9999", request);
 
         await response.ShouldHaveStatusCode(HttpStatusCode.NotFound);
-
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 }

@@ -6,60 +6,37 @@ namespace BookTracker.Api.Tests.IntegrationTests.DeleteMember;
 
 public class DeleteMember : IntegrationTest
 {
-
     [Fact]
     public async Task DeleteMemberRemovesMember()
     {
-        var writer = Writer;
+        var memberId = await AuthenticateAsMember();
 
-        writer.Seed(db =>
-        {
-            db.Members.Add(
-                new Member
-                {
-                    Id = 1,
-                    Name = new MemberName("Chung Lee"),
-                    Email = new MemberEmail("Chung@gmail.com"),
-                    PasswordHash = "test-password-hash"
-                });
+        var response = await Client.DeleteAsync($"/members/{memberId}");
 
-
-        });
-        var response = await Client.DeleteAsync("/members/1");
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
 
-        var member = Reader.Query(db => db.Members.Find(1));
-
+        var member = Reader.Query(db => db.Members.Find(memberId));
         Assert.Null(member);
     }
 
     [Fact]
     public async Task DeleteMemberReturnsNotFoundWhenMemberDoesNotExist()
     {
-        var response = await Client.DeleteAsync("/members/9999");
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-    }
+        await AuthenticateAsMember();
 
+        var response = await Client.DeleteAsync("/members/999999");
+        await response.ShouldHaveStatusCode(HttpStatusCode.Forbidden);   // Changed to Forbidden
+    }
+    
     [Fact]
     public async Task DeleteMemberReturnsNotFoundAfterDeletingMember()
     {
-        Writer.Seed(db =>
-        {
-            db.Members.Add(new Member
-            {
-                Id = 1,
-                Name = new MemberName("Ada Lovelace"),
-                Email = new MemberEmail("ada@example.com"),
-                PasswordHash = "test-password-hash"
-            });
-        });
+        var memberId = await AuthenticateAsMember();
 
-        var deleteResponse = await Client.DeleteAsync("/members/1");
-
+        var deleteResponse = await Client.DeleteAsync($"/members/{memberId}");
         await deleteResponse.ShouldHaveStatusCode(HttpStatusCode.NoContent);
 
-        var getResponse = await Client.GetAsync("/members/1");
-
+        var getResponse = await Client.GetAsync($"/members/{memberId}");
         await getResponse.ShouldHaveStatusCode(HttpStatusCode.NotFound);
     }
 }

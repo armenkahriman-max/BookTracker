@@ -3,89 +3,51 @@ using System.Net.Http.Json;
 using BookTracker.Api.Application.UpdateMember;
 using BookTracker.Api.Domain;
 using BookTracker.Api.Domain.Members;
-using BookTracker.Api.Storage;
-
 
 namespace BookTracker.Api.Tests.IntegrationTests.UpdateMember;
 
 public class UpdateMember : IntegrationTest
 {
-
     [Fact]
     public async Task PutMemberUpdatesMember()
     {
-        var writer = Writer;
+        var memberId = await AuthenticateAsMember();
 
-        writer.Seed(db =>
+        var request = new UpdateMemberRequest
         {
-            db.Members.Add(
-                new Member
-                {
-                    Name = new MemberName("Donner"),
-                    Email = new MemberEmail("Chugns@gmail.com"),
-                    PasswordHash = "test-password-hash"
-                });
-        });
+            Name = "Dean",
+            Email = "dean@example.com"
+        };
 
-        var request =
-            new UpdateMemberRequest
-            {
-                Name = "Dean",
-                Email = "Chugns@gmail.com",
-
-
-            };
-
-
-
-        var response = await Client.PutAsJsonAsync("/members/1", request);
+        var response = await Client.PutAsJsonAsync($"/members/{memberId}", request);
 
         await response.ShouldHaveStatusCode(HttpStatusCode.NoContent);
 
-        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
-
-        var reader = Reader;
-        var member = reader.Query(db => db.Members.Find(1));
-
+        var member = Reader.Query(db => db.Members.Find(memberId));
         Assert.NotNull(member);
         Assert.Equal("Dean", member.Name.Value);
-        Assert.Equal("chugns@gmail.com", member.Email.Value);
-
+        Assert.Equal("dean@example.com", member.Email.Value);
     }
 
     [Fact]
     public async Task PutMemberReturnsNotFoundWhenMemberDoesNotExist()
     {
-        var request =
-            new UpdateMemberRequest
-            {
-                Name = "Unknown Member",
-                Email = "unknown@gmail.com",
+        await AuthenticateAsMember();
 
-            };
+        var request = new UpdateMemberRequest
+        {
+            Name = "Unknown",
+            Email = "unknown@example.com"
+        };
 
-
-
-        var response = await Client.PutAsJsonAsync("/members/9999", request);
-
-        await response.ShouldHaveStatusCode(HttpStatusCode.NotFound);
-
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        var response = await Client.PutAsJsonAsync("/members/999999", request);
+        await response.ShouldHaveStatusCode(HttpStatusCode.Forbidden);
     }
 
     [Fact]
-
     public async Task PutMemberReturnsBadRequestWhenEmailIsInvalid()
     {
-        Writer.Seed(db =>
-        {
-            db.Members.Add(new Member
-            {
-                Name = new MemberName("John Doe"),
-                Email = new MemberEmail("john@example.com"),
-                PasswordHash = "test-password-hash"
-            });
-        });
+        var memberId = await AuthenticateAsMember();
 
         var request = new UpdateMemberRequest
         {
@@ -93,58 +55,32 @@ public class UpdateMember : IntegrationTest
             Email = "invalid-email"
         };
 
-        var response = await Client.PutAsJsonAsync("/members/1", request);
-
+        var response = await Client.PutAsJsonAsync($"/members/{memberId}", request);
         await response.ShouldHaveStatusCode(HttpStatusCode.BadRequest);
-
-        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
+
     [Fact]
     public async Task PutMemberReturnsConflictWhenEmailAlreadyExists()
     {
-        Writer.Seed(db =>
-        {
-            db.Members.AddRange(
-                new Member
-                {
-                    Id = 1,
-                    Name = new MemberName("Ada Lovelace"),
-                    Email = new MemberEmail("ada@example.com"),
-                    PasswordHash = "test-password-hash"
-                },
-                new Member
-                {
-                    Id = 2,
-                    Name = new MemberName("Bob Smith"),
-                    Email = new MemberEmail("bob@example.com"),
-                    PasswordHash = "test-password-hash"
-                });
-        });
+        var memberId = await AuthenticateAsMember();
+
+
+        SeedMember("Bob Smith", "bob@example.com");
 
         var request = new UpdateMemberRequest
         {
-            Name = "Ada Lovelace",
+            Name = "Ada",
             Email = "bob@example.com"
         };
 
-        var response = await Client.PutAsJsonAsync("/members/1", request);
-
+        var response = await Client.PutAsJsonAsync($"/members/{memberId}", request);
         await response.ShouldHaveStatusCode(HttpStatusCode.Conflict);
     }
 
     [Fact]
     public async Task PutMemberAllowsKeepingOwnEmail()
     {
-        Writer.Seed(db =>
-        {
-            db.Members.Add(new Member
-            {
-                Id = 1,
-                Name = new MemberName("Ada Lovelace"),
-                Email = new MemberEmail("ada@example.com"),
-                PasswordHash = "test-password-hash"
-            });
-        });
+        var memberId = await AuthenticateAsMember("Ada Lovelace", "ada@example.com");
 
         var request = new UpdateMemberRequest
         {
@@ -152,8 +88,7 @@ public class UpdateMember : IntegrationTest
             Email = "ADA@EXAMPLE.COM"
         };
 
-        var response = await Client.PutAsJsonAsync("/members/1", request);
-
+        var response = await Client.PutAsJsonAsync($"/members/{memberId}", request);
         await response.ShouldHaveStatusCode(HttpStatusCode.NoContent);
     }
 }

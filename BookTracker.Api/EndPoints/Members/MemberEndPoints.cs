@@ -1,11 +1,13 @@
 using BookTracker.Api.Application.CreateMember;
 using BookTracker.Api.Application.DeleteMember;
-using BookTracker.Api.Application.GetMemberSummaries;
 using BookTracker.Api.Application.GetMemberDetails;
-using BookTracker.Api.Application.UpdateMember;
-using BookTracker.Api.Domain;
+using BookTracker.Api.Application.GetMemberSummaries;
 using BookTracker.Api.Application.GetMemberSummariesQueryHandler;
 using BookTracker.Api.Application.Members;
+using BookTracker.Api.Application.UpdateMember;
+using BookTracker.Api.Domain;
+using System.Security.Claims;
+
 namespace BookTracker.Api.Endpoints;
 
 public static class MemberEndPoints
@@ -15,11 +17,17 @@ public static class MemberEndPoints
         app.MapGet("/members", GetMemberSummaries);
         app.MapGet("/members/{id:int}", GetMemberDetails);
         app.MapPost("/members", CreateMember);
-        app.MapPut("/members/{id:int}", UpdateMember);
-        app.MapDelete("/members/{id:int}", DeleteMember);
+
+        app.MapPut("/members/{id:int}", UpdateMember)
+            .RequireAuthorization();
+
+        app.MapDelete("/members/{id:int}", DeleteMember)
+            .RequireAuthorization();
 
         return app;
     }
+
+    
     public static async Task<IResult> GetMemberSummaries(
         [AsParameters] GetMemberSummariesRequest request,
         GetMemberSummariesQueryHandler query)
@@ -31,13 +39,10 @@ public static class MemberEndPoints
     public static async Task<IResult> GetMemberDetails(int id, GetMemberDetailsQueryHandler query)
     {
         var member = await query.Execute(id);
-        if (member is null)
-        {
-            return Results.NotFound();
-        }
-        return Results.Ok(member);
+        return member is null ? Results.NotFound() : Results.Ok(member);
     }
 
+    
     public static async Task<IResult> CreateMember(
         CreateMemberRequest request,
         CreateMemberCommandHandler handler)
@@ -57,20 +62,25 @@ public static class MemberEndPoints
         }
     }
 
-    public static async Task<IResult> UpdateMember(
+
+    private static async Task<IResult> UpdateMember(
         int id,
         UpdateMemberRequest request,
+        ClaimsPrincipal user,
         UpdateMemberCommandHandler handler)
     {
+        if (!IsCurrentMember(user, id))
+        {
+            return Results.Forbid();
+        }
+
         try
         {
             var updated = await handler.Execute(id, request);
-            if (!updated)
-            {
-                return Results.NotFound();
-            }
 
-            return Results.NoContent();
+            return !updated
+                ? Results.NotFound()
+                : Results.NoContent();
         }
         catch (MemberEmailAlreadyExistsException exception)
         {
@@ -82,23 +92,34 @@ public static class MemberEndPoints
         }
     }
 
-    public static async Task<IResult> DeleteMember(
+
+    private static async Task<IResult> DeleteMember(
         int id,
-    DeleteMemberCommandHandler handler)
+        ClaimsPrincipal user,
+        DeleteMemberCommandHandler handler)
     {
+        if (!IsCurrentMember(user, id))
+        {
+            return Results.Forbid();
+        }
+
         try
         {
             var deleted = await handler.Execute(id);
-            if (!deleted)
-            {
-                return Results.NotFound();
-            }
-            return Results.NoContent();
+            return !deleted
+                ? Results.NotFound()
+                : Results.NoContent();
         }
         catch (DomainException exception)
         {
             return Results.BadRequest(new { error = exception.Message });
         }
+    }
 
+    private static bool IsCurrentMember(ClaimsPrincipal user, int memberId)
+    {
+        var claim = user.FindFirstValue(ClaimTypes.NameIdentifier);
+        return int.TryParse(claim, out var currentMemberId)
+               && currentMemberId == memberId;
     }
 }

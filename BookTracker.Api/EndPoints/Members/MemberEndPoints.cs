@@ -17,12 +17,10 @@ public static class MemberEndPoints
     public static IEndpointRouteBuilder MapMemberEndpoints(this IEndpointRouteBuilder app)
     {
         app.MapGet("/members", GetMemberSummaries)
-        .RequireAuthorization(
-         AuthorizationPolicies.ManageMembers);
+        .RequireAuthorization();
 
         app.MapGet("/members/{id:int}", GetMemberDetails)
-        .RequireAuthorization(
-        AuthorizationPolicies.ManageMembers);
+        .RequireAuthorization();
 
         app.MapPost("/members", CreateMember);
 
@@ -36,18 +34,51 @@ public static class MemberEndPoints
     }
 
 
-    public static async Task<IResult> GetMemberSummaries(
-        [AsParameters] GetMemberSummariesRequest request,
-        GetMemberSummariesQueryHandler query)
+    private static async Task<IResult> GetMemberSummaries(
+     [AsParameters]
+    GetMemberSummariesRequest request,
+     ClaimsPrincipal principal,
+     GetMemberSummariesQueryHandler handler)
     {
-        var members = await query.Execute(request);
-        return Results.Ok(members);
+        try
+        {
+            var actor =
+                principal.ToActor();
+
+            var response =
+                await handler.Execute(
+                    actor,
+                    request);
+
+            return Results.Ok(response);
+        }
+        catch (ForbiddenOperationException)
+        {
+            return Results.Forbid();
+        }
     }
 
-    public static async Task<IResult> GetMemberDetails(int id, GetMemberDetailsQueryHandler query)
+    private static async Task<IResult> GetMemberDetails(
+        int id,
+        ClaimsPrincipal principal,
+        GetMemberDetailsQueryHandler handler)
     {
-        var member = await query.Execute(id);
-        return member is null ? Results.NotFound() : Results.Ok(member);
+        try
+        {
+            var actor = principal.ToActor();
+
+            var response = await handler.Execute(actor, id);
+
+            return response is null ? Results.NotFound() : Results.Ok(response);
+        }
+        catch (ForbiddenOperationException)
+        {
+            return Results.Forbid();
+        }
+        catch (DomainException exception)
+        {
+            return Results.BadRequest(new { error = exception.Message });
+        }
     }
 
 
@@ -74,21 +105,19 @@ public static class MemberEndPoints
     private static async Task<IResult> UpdateMember(
         int id,
         UpdateMemberRequest request,
-        ClaimsPrincipal user,
+        ClaimsPrincipal principal,
         UpdateMemberCommandHandler handler)
     {
-        if (!CanManageMember(user, id))
-        {
-            return Results.Forbid();
-        }
-
         try
         {
-            var updated = await handler.Execute(id, request);
+            var actor = principal.ToActor();
+            var updated = await handler.Execute(actor, id, request);
 
-            return !updated
-                ? Results.NotFound()
-                : Results.NoContent();
+            return updated ? Results.NoContent() : Results.NotFound();
+        }
+        catch (ForbiddenOperationException)
+        {
+            return Results.Forbid();
         }
         catch (MemberEmailAlreadyExistsException exception)
         {
@@ -100,23 +129,22 @@ public static class MemberEndPoints
         }
     }
 
-
     private static async Task<IResult> DeleteMember(
         int id,
-        ClaimsPrincipal user,
+        ClaimsPrincipal principal,
         DeleteMemberCommandHandler handler)
     {
-        if (!CanManageMember(user, id))
-        {
-            return Results.Forbid();
-        }
-
         try
         {
-            var deleted = await handler.Execute(id);
-            return !deleted
-                ? Results.NotFound()
-                : Results.NoContent();
+            var actor = principal.ToActor();
+
+            var deleted = await handler.Execute(actor, id);
+
+            return deleted ? Results.NoContent() : Results.NotFound();
+        }
+        catch (ForbiddenOperationException)
+        {
+            return Results.Forbid();
         }
         catch (DomainException exception)
         {

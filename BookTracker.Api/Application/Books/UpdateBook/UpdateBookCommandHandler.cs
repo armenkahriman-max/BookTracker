@@ -5,7 +5,7 @@ namespace BookTracker.Api.Application.UpdateBook;
 
 public class UpdateBookCommandHandler(IBookRepository bookRepository) : IHandler
 {
-    public async Task<bool> Execute(int id, UpdateBookRequest request)
+    public async Task<bool> Execute(Domain.Actors.Actor actor, int id, UpdateBookRequest request)
     {
         var book = new Book
         {

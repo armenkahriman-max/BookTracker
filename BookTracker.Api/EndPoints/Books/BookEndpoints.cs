@@ -5,6 +5,7 @@ using BookTracker.Api.Application.GetBookDetails;
 using BookTracker.Api.Application.UpdateBook;
 using BookTracker.Api.Domain;
 using BookTracker.Api.Security;
+using System.Security.Claims;
 
 
 
@@ -20,16 +21,13 @@ public static class BookEndpoints
         app.MapGet("/books/{id:int}", GetBookDetails);
 
         app.MapPost("/books", CreateBook)
-     .RequireAuthorization(
-         AuthorizationPolicies.ManageBooks);
+     .RequireAuthorization();
 
         app.MapPut("/books/{id:int}", UpdateBook)
-            .RequireAuthorization(
-                 AuthorizationPolicies.ManageBooks);
+            .RequireAuthorization();
 
         app.MapDelete("/books/{id:int}", DeleteBook)
-            .RequireAuthorization(
-                 AuthorizationPolicies.ManageBooks);
+            .RequireAuthorization();
         return app;
     }
 
@@ -53,14 +51,53 @@ public static class BookEndpoints
         return Results.Ok(book);
     }
 
-    public static async Task<IResult> CreateBook(
-        CreateBookRequest request,
-        CreateBookCommandHandler handler)
+    private static async Task<IResult> CreateBook(
+     CreateBookRequest request,
+     ClaimsPrincipal principal,
+     CreateBookCommandHandler handler)
     {
         try
         {
-            var response = await handler.Execute(request);
-            return Results.Created($"/books/{response.Id}", response);
+            var actor =
+                principal.ToActor();
+
+            var response =
+                await handler.Execute(
+                    actor,
+                    request);
+
+            return Results.Created(
+                $"/books/{response.Id}",
+                response);
+        }
+        catch (ForbiddenOperationException)
+        {
+            return Results.Forbid();
+        }
+        catch (DomainException exception)
+        {
+            return Results.BadRequest(
+                new { error = exception.Message });
+        }
+    }
+
+    private static async Task<IResult> UpdateBook(
+           int id,
+           UpdateBookRequest request,
+           ClaimsPrincipal principal,
+           UpdateBookCommandHandler handler)
+    {
+        try
+        {
+            var actor = principal.ToActor();
+
+            var updated = await handler.Execute(actor, id, request);
+
+            return updated ? Results.NoContent() : Results.NotFound();
+        }
+        catch (ForbiddenOperationException)
+        {
+            return Results.Forbid();
         }
         catch (DomainException exception)
         {
@@ -68,42 +105,22 @@ public static class BookEndpoints
         }
     }
 
-    public static async Task<IResult> UpdateBook(
-    int id,
-    UpdateBookRequest request,
-    UpdateBookCommandHandler handler)
+ private static async Task<IResult> DeleteBook(
+        int id,
+        ClaimsPrincipal principal,
+        DeleteBookCommandHandler handler)
     {
         try
         {
-            var updated = await handler.Execute(id, request);
+            var actor = principal.ToActor();
 
-            if (!updated)
-            {
-                return Results.NotFound();
-            }
+            var deleted = await handler.Execute(actor, id);
 
-            return Results.NoContent();
+            return deleted ? Results.NoContent() : Results.NotFound();
         }
-        catch (DomainException exception)
+        catch (ForbiddenOperationException)
         {
-            return Results.BadRequest(new { error = exception.Message });
-        }
-    }
-
-    public static async Task<IResult> DeleteBook(
-     int id,
-     DeleteBookCommandHandler handler)
-    {
-        try
-        {
-            var deleted = await handler.Execute(id);
-
-            if (!deleted)
-            {
-                return Results.NotFound();
-            }
-
-            return Results.NoContent();
+            return Results.Forbid();
         }
         catch (DomainException exception)
         {

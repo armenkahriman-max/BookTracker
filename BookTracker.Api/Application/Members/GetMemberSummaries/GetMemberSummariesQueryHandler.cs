@@ -2,7 +2,11 @@ using BookTracker.Api.Application.GetMemberSummaries;
 using BookTracker.Api.Application.Members.GetMemberSummaries;
 using BookTracker.Api.Storage;
 using Microsoft.EntityFrameworkCore;
+using BookTracker.Api.Domain.Actors;
+using BookTracker.Api.Domain.Members;
+
 namespace BookTracker.Api.Application.GetMemberSummariesQueryHandler;
+
 
 public class GetMemberSummariesQueryHandler(AppDbContext dbContext) : IHandler
 {
@@ -11,8 +15,12 @@ public class GetMemberSummariesQueryHandler(AppDbContext dbContext) : IHandler
     private const int MinPage = 1;
     private const int MaxPageSize = 50;
 
-    public async Task<PagedResult<MemberSummary>> Execute(GetMemberSummariesRequest request)
+    public async Task<PagedResult<MemberSummary>> Execute(
+       Actor actor,
+       GetMemberSummariesRequest request)
     {
+        MemberPermissions.EnsureCanViewDirectory(actor);
+        
         var page = Math.Max(1, request.Page ?? DefaultPage);
         var pageSize = Math.Clamp(request.PageSize ?? DefaultPageSize, MinPage, MaxPageSize);
 
@@ -23,8 +31,8 @@ public class GetMemberSummariesQueryHandler(AppDbContext dbContext) : IHandler
             var search = $"%{request.Search.Trim()}%";
 
             query = query.Where(member =>
-                EF.Functions.Like((string)member.Name, search) ||
-                EF.Functions.Like((string)member.Email, search));
+                        EF.Functions.Like((string)member.Name, search) ||
+                        EF.Functions.Like((string)member.Email, search));
         }
 
         var totalItems = await query.CountAsync();

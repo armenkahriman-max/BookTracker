@@ -11,7 +11,7 @@ namespace BookTracker.Api.Tests.IntegrationTests;
 
 public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 {
-    private SqliteConnection connection = null!;
+    private SqliteConnection? connection;
 
     private static readonly KeyValuePair<string, string?>[] TestSettings =
     [
@@ -66,8 +66,12 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 
     protected override void Dispose(bool disposing)
     {
+        if (disposing)
+        {
+            connection?.Dispose();
+        }
+
         base.Dispose(disposing);
-        connection.Dispose();
     }
 
     public EfReader GetReader() => new(Services);

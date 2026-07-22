@@ -1,5 +1,6 @@
 using System.Net;
 using BookTracker.Api.Domain;
+using BookTracker.Api.Domain.Books;
 using BookTracker.Api.Domain.Members;
 
 namespace BookTracker.Api.Tests.IntegrationTests.DeleteBook;

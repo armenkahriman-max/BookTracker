@@ -5,6 +5,7 @@ using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.DataProtection.KeyManagement.Internal;
 using BookTracker.Api.Application.GetBookSummaries;
+using BookTracker.Api.Domain.Books;
 
 
 namespace BookTracker.Api.Tests.IntegrationTests.BookList;

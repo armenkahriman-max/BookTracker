@@ -6,6 +6,7 @@ using BookTracker.Api.Application.UpdateBook;
 using BookTracker.Api.Domain;
 using BookTracker.Api.Security;
 using System.Security.Claims;
+using BookTracker.Api.Storage.Books;
 
 
 
@@ -81,19 +82,27 @@ public static class BookEndpoints
         }
     }
 
+
     private static async Task<IResult> UpdateBook(
-           int id,
-           UpdateBookRequest request,
-           ClaimsPrincipal principal,
-           UpdateBookCommandHandler handler)
+     int id,
+     UpdateBookRequest request,
+     ClaimsPrincipal principal,
+     UpdateBookCommandHandler handler)
     {
         try
         {
             var actor = principal.ToActor();
 
-            var updated = await handler.Execute(actor, id, request);
+            var result = await handler.Execute(actor, id, request);
 
-            return updated ? Results.NoContent() : Results.NotFound();
+            return result switch
+            {
+                UpdateBookResult.Updated => Results.NoContent(),
+                UpdateBookResult.NotFound => Results.NotFound(),
+                UpdateBookResult.Conflict => Results.Conflict(
+                    new { error = "The book was changed by another user. Please refresh and try again." }),
+                _ => Results.BadRequest()
+            };
         }
         catch (ForbiddenOperationException)
         {
@@ -104,11 +113,10 @@ public static class BookEndpoints
             return Results.BadRequest(new { error = exception.Message });
         }
     }
-
- private static async Task<IResult> DeleteBook(
-        int id,
-        ClaimsPrincipal principal,
-        DeleteBookCommandHandler handler)
+    private static async Task<IResult> DeleteBook(
+               int id,
+               ClaimsPrincipal principal,
+               DeleteBookCommandHandler handler)
     {
         try
         {

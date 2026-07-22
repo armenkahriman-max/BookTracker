@@ -1,4 +1,5 @@
 using BookTracker.Api.Domain;
+using BookTracker.Api.Domain.Books;
 using QuickFuzzr;
 
 namespace BookTracker.Api.Seeding;

@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using BookTracker.Api.Application.CreateBook;
 using BookTracker.Api.Domain;
+using BookTracker.Api.Domain.Books;
 using BookTracker.Api.Domain.Members;
 using Microsoft.AspNetCore.Mvc.Testing;
 

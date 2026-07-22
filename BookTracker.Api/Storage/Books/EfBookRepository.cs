@@ -1,4 +1,7 @@
 using BookTracker.Api.Domain;
+using BookTracker.Api.Domain.Books;
+using BookTracker.Api.Storage.Books;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace BookTracker.Api.Storage;
@@ -27,21 +30,36 @@ public class EfBookRepository(AppDbContext dbContext) : IBookRepository
         return true;
     }
 
-    public async Task<bool> UpdateAsync(Book book)
+    public async Task<UpdateBookResult> UpdateAsync(
+      Book book,
+      Guid expectedVersion)
     {
         var existingBook = await dbContext.Books.FindAsync(book.Id);
 
         if (existingBook is null)
         {
-            return false;
+            return UpdateBookResult.NotFound;
         }
+
+
+        dbContext.Entry(existingBook)
+            .Property(current => current.Version)
+            .OriginalValue = expectedVersion;
+
 
         existingBook.Title = book.Title;
         existingBook.Author = book.Author;
         existingBook.Year = book.Year;
+        existingBook.Version = Guid.NewGuid();
 
-        await dbContext.SaveChangesAsync();
-
-        return true;
+        try
+        {
+            await dbContext.SaveChangesAsync();
+            return UpdateBookResult.Updated;
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            return UpdateBookResult.Conflict;
+        }
     }
 }

@@ -4,6 +4,8 @@ import { LoginPage } from "./auth/LoginPage";
 import { LogoutButton } from "./auth/LogoutButton";
 import { BookListPage } from "./books/BookListPage";
 import { BookDetailsPage } from "./books/BookDetailsPage";
+import { RequireAdministrator } from "./auth/RequireAdministrator";
+import { CreateBookPage } from "./books/CreateBookPage";
 
 function HomePage() {
   return <h1>Book Tracker</h1>;
@@ -26,8 +28,12 @@ export default function App() {
         <Route path="/account" element={<AccountPage />} />
         <Route path="/books" element={<BookListPage />} />
         <Route path="/books/:bookId" element={<BookDetailsPage />} />
+
+        
+        <Route element={<RequireAdministrator />}>
+          <Route path="/books/new" element={<CreateBookPage />} />
+        </Route>
       </Routes>
-    
     </>
   );
 }

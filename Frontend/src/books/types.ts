@@ -17,3 +17,16 @@ export type BookDetails = {
   year: number;
   version: string;
 };
+
+export interface CreateBookRequest {
+  title: string;
+  author: string;
+  year: number;
+}
+
+export interface CreateBookResponse {
+  id: number;
+  title: string;
+  author: string;
+  year: number;
+}

@@ -2,7 +2,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import type { FormEvent } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { getBooks } from "./booksApi";
-
+import { CreateBookLink } from "./CreateBookLink";
 
 const pageSize = 10;
 
@@ -11,7 +11,7 @@ function readPage(value: string | null) {
   return Number.isInteger(page) && page > 0 ? page : 1;
 }
 
-export function BookListPage() {
+ export function BookListPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const page = readPage(searchParams.get("page"));
   const search = searchParams.get("search")?.trim() ?? "";
@@ -47,7 +47,7 @@ export function BookListPage() {
     setSearchParams(next);
   }
 
-    if (booksQuery.isPending) {
+  if (booksQuery.isPending) {
     return <p>Loading books...</p>;
   }
 
@@ -60,6 +60,9 @@ export function BookListPage() {
   return (
     <main>
       <h1>Books</h1>
+
+      
+      <CreateBookLink />
 
       <form key={search} onSubmit={handleSearch}>
         <label>
@@ -78,10 +81,10 @@ export function BookListPage() {
       ) : (
         <ul>
           {result.items.map((book) => (
-           <li key={book.id}>
-             <Link to={`/books/${book.id}`}>
-              <strong>{book.title}</strong> by {book.author}
-             </Link>
+            <li key={book.id}>
+              <Link to={`/books/${book.id}`}>
+                <strong>{book.title}</strong> by {book.author}
+              </Link>
             </li>
           ))}
         </ul>

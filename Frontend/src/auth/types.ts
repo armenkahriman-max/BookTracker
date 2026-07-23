@@ -14,3 +14,16 @@ export type CurrentMember = {
   email: string;
   role: string;
 };
+
+export type CreateBookRequest = {
+  title: string;
+  author: string;
+  year: number;
+};
+
+export type CreateBookResponse = {
+  id: number;
+  title: string;
+  author: string;
+  year: number;
+};

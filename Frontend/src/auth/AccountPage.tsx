@@ -1,27 +1,10 @@
-import { useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { Navigate } from "react-router-dom";
 import { ApiError } from "../api";
-import { getCurrentMember } from "./authApi";
-import { getAccessToken, removeAccessToken } from "./tokenStorage";
+import { getAccessToken } from "./tokenStorage";
+import { useCurrentMember } from "./useCurrentMember";
 
 export function AccountPage() {
-  const currentMemberQuery = useQuery({
-    queryKey: ["current-member"],
-    queryFn: getCurrentMember,
-    enabled: getAccessToken() !== null,
-    retry: false,
-  });
-
-  const unauthorized =
-    currentMemberQuery.error instanceof ApiError &&
-    currentMemberQuery.error.status === 401;
-
-  useEffect(() => {
-    if (unauthorized) {
-      removeAccessToken();
-    }
-  }, [unauthorized]);
+  const currentMemberQuery = useCurrentMember();
 
   if (!getAccessToken()) {
     return <Navigate to="/login" replace />;
@@ -30,6 +13,10 @@ export function AccountPage() {
   if (currentMemberQuery.isPending) {
     return <p>Loading account...</p>;
   }
+
+  const unauthorized =
+    currentMemberQuery.error instanceof ApiError &&
+    currentMemberQuery.error.status === 401;
 
   if (unauthorized) {
     return <Navigate to="/login" replace />;

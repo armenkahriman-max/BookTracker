@@ -3,6 +3,7 @@ import { AccountPage } from "./auth/AccountPage";
 import { LoginPage } from "./auth/LoginPage";
 import { LogoutButton } from "./auth/LogoutButton";
 import { BookListPage } from "./books/BookListPage";
+import { BookDetailsPage } from "./books/BookDetailsPage";
 
 function HomePage() {
   return <h1>Book Tracker</h1>;
@@ -24,7 +25,9 @@ export default function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/account" element={<AccountPage />} />
         <Route path="/books" element={<BookListPage />} />
+        <Route path="/books/:bookId" element={<BookDetailsPage />} />
       </Routes>
+    
     </>
   );
 }

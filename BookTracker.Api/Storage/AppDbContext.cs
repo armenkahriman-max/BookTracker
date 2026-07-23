@@ -3,7 +3,7 @@ using BookTracker.Api.Domain.Books;
 using BookTracker.Api.Domain.Members;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookTracker.Api.Storage;
+namespace BookTracker.Api.Storage; //ovo uradi database 
 
 public class AppDbContext(DbContextOptions<AppDbContext> options)
     : DbContext(options)

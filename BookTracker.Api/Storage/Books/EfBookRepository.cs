@@ -4,7 +4,7 @@ using BookTracker.Api.Storage.Books;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace BookTracker.Api.Storage;
+namespace BookTracker.Api.Storage; //contact with database
 
 public class EfBookRepository(AppDbContext dbContext) : IBookRepository
 {

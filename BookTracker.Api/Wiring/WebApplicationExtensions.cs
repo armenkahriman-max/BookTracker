@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace BookTracker.Api.Wiring;
 
-public static class WebApplicationExtensions
+public static class WebApplicationExtensions // program.cs povezano da bude kracje
 {
     public static WebApplication UseBookTracker(this WebApplication app)
     {

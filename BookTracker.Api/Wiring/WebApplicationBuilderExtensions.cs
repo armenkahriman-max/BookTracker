@@ -11,7 +11,7 @@ using System.Security.Claims;
 
 namespace BookTracker.Api.Wiring;
 
-public static class WebApplicationBuilderExtensions
+public static class WebApplicationBuilderExtensions //program.cs konekcija da bude manje i lakse za citati povezano je
 {
     public static WebApplicationBuilder AddBookTracker(
     this WebApplicationBuilder builder)

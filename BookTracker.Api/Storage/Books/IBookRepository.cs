@@ -4,7 +4,7 @@ using BookTracker.Api.Storage.Books;
 
 namespace BookTracker.Api.Storage;
 
-public interface IBookRepository
+public interface IBookRepository // sta mowe da radi
 {
     Task<Book> AddAsync(Book book);
     Task<bool> DeleteAsync(int id);

@@ -1,7 +1,14 @@
-import { apiRequest } from "../api";
+import { apiRequest, apiRequestWithoutResponse } from "../api";
 import type { PagedResult } from "../types";
-import type { BookDetails, BookSummary, GetBooksRequest, CreateBookRequest, CreateBookResponse } from "./types";
+import type { BookDetails, BookSummary, GetBooksRequest, CreateBookRequest, CreateBookResponse, UpdateBookRequest} from "./types";
  
+
+export function updateBook(bookId: number, request: UpdateBookRequest) {
+  return apiRequestWithoutResponse(`/books/${bookId}`, {
+    method: "PUT",
+    body: JSON.stringify(request),
+  });
+}
 
 export function createBook(request: CreateBookRequest) {
   return apiRequest<CreateBookResponse>("/books", {
@@ -25,5 +32,7 @@ export function getBooks(request: GetBooksRequest) {
   return apiRequest<PagedResult<BookSummary>>(
     `/books?${parameters.toString()}`,
   );
+
+  
 }
 

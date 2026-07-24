@@ -1,7 +1,11 @@
 import { Link } from "react-router-dom";
 import { useCurrentMember } from "../auth/useCurrentMember";
 
-export function CreateBookLink() {
+type EditBookLinkProps = {
+  bookId: number;
+};
+
+export function EditBookLink({ bookId }: EditBookLinkProps) {
   const currentMemberQuery = useCurrentMember();
 
   if (
@@ -11,5 +15,5 @@ export function CreateBookLink() {
     return null;
   }
 
-  return <Link to="/books/new">Add new book</Link>;
+  return <Link to={`/books/${bookId}/edit`}>Edit book</Link>;
 }

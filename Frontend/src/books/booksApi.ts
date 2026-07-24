@@ -3,6 +3,12 @@ import type { PagedResult } from "../types";
 import type { BookDetails, BookSummary, GetBooksRequest, CreateBookRequest, CreateBookResponse, UpdateBookRequest} from "./types";
  
 
+export function deleteBook(bookId: number) {
+  return apiRequestWithoutResponse(`/books/${bookId}`, {
+    method: "DELETE",
+  });
+}
+
 export function updateBook(bookId: number, request: UpdateBookRequest) {
   return apiRequestWithoutResponse(`/books/${bookId}`, {
     method: "PUT",
@@ -33,6 +39,7 @@ export function getBooks(request: GetBooksRequest) {
     `/books?${parameters.toString()}`,
   );
 
+  
   
 }
 

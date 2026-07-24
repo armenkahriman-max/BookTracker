@@ -2,13 +2,15 @@ import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ApiError } from "../api";
 import { getCurrentMember } from "./authApi";
-import { getAccessToken, removeAccessToken } from "./tokenStorage";
+import { useAccessToken, removeAccessToken } from "./tokenStorage";
 
 export function useCurrentMember() {
+  const accessToken = useAccessToken();
+
   const query = useQuery({
     queryKey: ["current-member"],
     queryFn: getCurrentMember,
-    enabled: getAccessToken() !== null,
+    enabled: accessToken !== null,
     retry: false,
   });
 

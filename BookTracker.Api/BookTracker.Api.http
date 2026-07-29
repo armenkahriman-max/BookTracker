@@ -24,7 +24,7 @@ DELETE http://localhost:5089/books/9999
 ###
 
 # Update Book
-PUT http://localhost:5089/books/3
+PUT http://localhost:5089/books/1
 Content-Type: application/json
 
 {

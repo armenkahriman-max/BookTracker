@@ -23,12 +23,17 @@ export function Navigation() {
         <span>Checking account...</span>
       )}
 
-      {hasToken && currentMemberQuery.isSuccess && (
-        <>
-          <Link to="/account">Account</Link>{" "}
-          <LogoutButton />
-        </>
-      )}
+    {hasToken && currentMemberQuery.isSuccess && (
+  <>
+    <Link to="/account">Account</Link>{" "}
+
+    {currentMemberQuery.data.role === "Administrator" && (
+      <Link to="/members">Members</Link>
+    )}{" "}
+
+    <LogoutButton />
+  </>
+)}
 
       {hasToken && currentMemberQuery.isError && <LogoutButton />}
     </nav>

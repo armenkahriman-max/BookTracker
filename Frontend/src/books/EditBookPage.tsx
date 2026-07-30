@@ -2,7 +2,7 @@ import { useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ApiError } from "../api";
-import { getBook, updateBook } from "./booksApi";
+import { getBook, updateBook } from "./BooksApi";
 import type { UpdateBookRequest } from "./types";
 
 function readBookId(value: string | undefined) {

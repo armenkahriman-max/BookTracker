@@ -2,10 +2,10 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { ApiError } from "../api";
-import { removeAccessToken } from "./tokenStorage"; // ← use the correct name from your project
-import { useCurrentMember } from "./useCurrentMember"; // or your path
-import { useDeleteMember } from "../members/memberHooks";
-import { authKeys, memberKeys } from "../members/memberKeys"; // adjust path
+import { removeAccessToken } from "./tokenStorage"; 
+import { useCurrentMember } from "./useCurrentMember"; 
+import { useDeleteMember } from "../members/MemberHooks";
+import { authKeys, memberKeys } from "../members/MemberKeys"; 
 
 export function DeleteAccountButton() {
   const [isConfirming, setIsConfirming] = useState(false);

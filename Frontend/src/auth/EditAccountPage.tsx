@@ -3,7 +3,7 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 import { ApiError } from "../api";
 import { getAccessToken } from "./tokenStorage";
 import { useCurrentMember } from "./useCurrentMember";
-import { useUpdateMember } from "../members/memberHooks";
+import { useUpdateMember } from "../members/MemberHooks";
 import type { UpdateMemberRequest } from "../members/types";
 
 export function EditAccountPage() {

@@ -2,7 +2,7 @@ import { useState, type FormEvent } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
 import { ApiError } from "../api";
-import { registerMember } from "./membersApi";
+import { registerMember } from "./MembersApi";
 
 export function RegisterPage() {
   const [formError, setFormError] = useState<string | null>(null);

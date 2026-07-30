@@ -21,7 +21,7 @@ export function RequireAdministrator() {
     return (
       <main>
         <h1>Forbidden</h1>
-        <p>Only administrators can manage books.</p>
+        <p>Only administrators can access this page.</p>
       </main>
     );
   }

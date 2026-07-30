@@ -2,59 +2,76 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { ApiError } from "../api";
-import { useCurrentMember } from "../auth/useCurrentMember";
-import { deleteBook } from "./BooksApi";
+import { useCurrentMember } from "../auth/useCurrentMember"; // adjust path if needed
+import { deleteMember } from "./MembersApi";
+import { memberKeys } from "./MemberKeys";
 
-type DeleteBookButtonProps = {
-  bookId: number;
-  title: string;
+type DeleteMemberButtonProps = {
+  memberId: number;
+  name: string;
+  email?: string;
 };
 
-export function DeleteBookButton({ bookId, title }: DeleteBookButtonProps) {
+export function DeleteMemberButton({
+  memberId,
+  name,
+  email,
+}: DeleteMemberButtonProps) {
   const [confirming, setConfirming] = useState(false);
   const currentMemberQuery = useCurrentMember();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  function leaveDeletedBook() {
+  function leaveDeletedMember() {
     queryClient.invalidateQueries({
-      queryKey: ["books"],
+      queryKey: memberKeys.lists(),
       refetchType: "none",
     });
     queryClient.removeQueries({
-      queryKey: ["books", "detail", bookId],
+      queryKey: memberKeys.detail(memberId),
       exact: true,
     });
-    navigate("/books");
+    navigate("/members");
   }
 
   const deleteMutation = useMutation({
-    mutationFn: () => deleteBook(bookId),
-    onSuccess: leaveDeletedBook,
+    mutationFn: () => deleteMember(memberId),
+    onSuccess: leaveDeletedMember,
   });
 
-   if (
+  // Only show for administrators
+  if (
     !currentMemberQuery.isSuccess ||
     currentMemberQuery.data.role !== "Administrator"
   ) {
     return null;
   }
-   if (!confirming) {
+
+  if (!confirming) {
     return (
       <button type="button" onClick={() => setConfirming(true)}>
-        Delete book
+        Delete member
       </button>
     );
   }
 
-    const mutationStatus =
+  const mutationStatus =
     deleteMutation.error instanceof ApiError
       ? deleteMutation.error.status
       : null;
 
   return (
-    <section aria-labelledby="delete-book-heading">
-      <h2 id="delete-book-heading">Delete {title}?</h2>
+    <section aria-labelledby="delete-member-heading">
+      <h2 id="delete-member-heading">Delete {name}?</h2>
+      <p>
+        {email ? (
+          <>
+            Account: <strong>{name}</strong> ({email})
+          </>
+        ) : (
+          <>This will permanently delete <strong>{name}</strong>.</>
+        )}
+      </p>
       <p>This action cannot be undone.</p>
 
       <button
@@ -62,7 +79,7 @@ export function DeleteBookButton({ bookId, title }: DeleteBookButtonProps) {
         onClick={() => deleteMutation.mutate()}
         disabled={deleteMutation.isPending}
       >
-        {deleteMutation.isPending ? "Deleting..." : "Yes, delete book"}
+        {deleteMutation.isPending ? "Deleting..." : "Yes, delete member"}
       </button>{" "}
 
       <button
@@ -78,20 +95,19 @@ export function DeleteBookButton({ bookId, title }: DeleteBookButtonProps) {
 
       {mutationStatus === 401 && <p>Your login is missing or expired.</p>}
       {mutationStatus === 403 && (
-        <p>Only administrators can delete books.</p>
+        <p>Only administrators can delete members.</p>
       )}
       {mutationStatus === 404 && (
         <div>
-          <p>This book no longer exists. It may already have been deleted.</p>
-          <button type="button" onClick={leaveDeletedBook}>
-            Back to books
+          <p>This member no longer exists. It may already have been deleted.</p>
+          <button type="button" onClick={leaveDeletedMember}>
+            Back to members
           </button>
         </div>
       )}
       {deleteMutation.isError && mutationStatus === null && (
-        <p>Could not delete the book.</p>
+        <p>Could not delete the member.</p>
       )}
     </section>
   );
-  
 }

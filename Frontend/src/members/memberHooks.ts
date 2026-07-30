@@ -5,9 +5,9 @@ getMembers,
 getMember,
 updateMember,
 deleteMember,
-} from "./membersApi";
+} from "./MembersApi";
 import type { GetMembersRequest, UpdateMemberRequest } from "./types";
-import { memberKeys, authKeys } from "./memberKeys";
+import { memberKeys, authKeys } from "./MemberKeys";
 
 export function useCurrentMember() {
     return useQuery({

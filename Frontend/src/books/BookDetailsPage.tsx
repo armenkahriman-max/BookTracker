@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
 import { ApiError } from "../api";
-import { getBook } from "./booksApi";
+import { getBook } from "./BooksApi";
 import { EditBookLink } from "./EditBookLink";
 import { DeleteBookButton } from "./DeleteBookButton";
 

@@ -2,7 +2,7 @@ import { useState, type FormEvent } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
 import { ApiError } from "../api";
-import { createBook } from "./booksApi";
+import { createBook } from "./BooksApi";
 
 export function CreateBookPage() {
   const [formError, setFormError] = useState<string | null>(null);

@@ -6,7 +6,8 @@ using BookTracker.Api.Domain.Members;
 
 namespace BookTracker.Api.Tests.IntegrationTests.Members.Authorization;
 
-public class MemberAuthorizationTests : IntegrationTest
+[Collection(PostgreSqlCollection.Name)]
+public class MemberAuthorizationTests(PostgreSqlFixture database) : IntegrationTest(database)
 {
     [Fact]
     public async Task CreateMemberDoesNotRequireAuthentication()

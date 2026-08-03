@@ -1,11 +1,11 @@
 using System.Net;
-using BookTracker.Api.Application.GetBookDetails;
 using BookTracker.Api.Domain;
 using BookTracker.Api.Domain.Books;
 
 namespace BookTracker.Api.Tests.IntegrationTests.GetBookByIdTests;
 
-public class GetBookByIdTests : IntegrationTest
+[Collection(PostgreSqlCollection.Name)]
+public class GetBookByIdTests(PostgreSqlFixture database) : IntegrationTest(database)
 {
 
 

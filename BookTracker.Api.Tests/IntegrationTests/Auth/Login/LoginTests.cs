@@ -7,7 +7,8 @@ using Microsoft.AspNetCore.Identity;
 
 namespace BookTracker.Api.Tests.IntegrationTests.Auth.Login;
 
-public class LoginTests : IntegrationTest
+[Collection(PostgreSqlCollection.Name)]
+public class LoginTests(PostgreSqlFixture database) : IntegrationTest(database)
 {
     private void SeedMember(string password = "analytical-engine")
     {

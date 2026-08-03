@@ -2,15 +2,14 @@ using System.Net.Http.Json;
 using BookTracker.Api.Application;
 using BookTracker.Api.Domain;
 using System.Net;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.DataProtection.KeyManagement.Internal;
 using BookTracker.Api.Application.GetBookSummaries;
 using BookTracker.Api.Domain.Books;
 
 
 namespace BookTracker.Api.Tests.IntegrationTests.BookList;
 
-public class BookListTests : IntegrationTest
+[Collection(PostgreSqlCollection.Name)]
+public class GetBookListTests(PostgreSqlFixture database) : IntegrationTest(database)
 {
 
     [Fact]

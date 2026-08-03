@@ -1,14 +1,13 @@
 using System.Net;
 using System.Net.Http.Json;
 using BookTracker.Api.Application.CreateBook;
-using BookTracker.Api.Domain;
 using BookTracker.Api.Domain.Books;
 using BookTracker.Api.Domain.Members;
-using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace BookTracker.Api.Tests.IntegrationTests.CreateBook;
 
-public class CreateBookTests : IntegrationTest
+[Collection(PostgreSqlCollection.Name)]
+public class CreateBookTests(PostgreSqlFixture database) : IntegrationTest(database)
 {
     [Fact]
     public async Task PostBookCreatesBook()

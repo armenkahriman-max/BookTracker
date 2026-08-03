@@ -5,7 +5,8 @@ using BookTracker.Api.Domain.Members;
 
 namespace BookTracker.Api.Tests.IntegrationTests.Auth.GetCurrentMember;
 
-public class GetCurrentMemberTests : IntegrationTest
+[Collection(PostgreSqlCollection.Name)]
+public class GetCurrentMemberTests(PostgreSqlFixture database) : IntegrationTest(database)
 {
     [Fact]
     public async Task GetCurrentMemberRequiresAuthentication()

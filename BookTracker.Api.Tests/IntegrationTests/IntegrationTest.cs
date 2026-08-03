@@ -8,27 +8,34 @@ using Microsoft.AspNetCore.Identity;
 
 namespace BookTracker.Api.Tests.IntegrationTests;
 
-public abstract class IntegrationTest : IDisposable
+public abstract class IntegrationTest : IAsyncLifetime
 {
-    private readonly CustomWebApplicationFactory factory = new();
+    private readonly PostgreSqlFixture database;
+    private readonly CustomWebApplicationFactory factory;
 
     protected HttpClient Client { get; }
-
     protected EfReader Reader { get; }
-
     protected EfWriter Writer { get; }
 
-    protected IntegrationTest()
+    protected IntegrationTest(PostgreSqlFixture database)
     {
+        this.database = database;
+        factory = new CustomWebApplicationFactory(database);
         Client = factory.CreateClient();
         Reader = factory.GetReader();
         Writer = factory.GetWriter();
     }
 
-    public void Dispose()
+    public Task InitializeAsync()
+    {
+        return database.ResetAsync();
+    }
+
+    public Task DisposeAsync()
     {
         Client.Dispose();
         factory.Dispose();
+        return Task.CompletedTask;
     }
 
     protected async Task<int> AuthenticateAsMember(
@@ -37,8 +44,7 @@ public abstract class IntegrationTest : IDisposable
         string email = "ada@example.com",
         string password = "analytical-engine")
     {
-        var member =
-        new Member
+        var member = new Member
         {
             Name = new MemberName(name),
             Email = new MemberEmail(email),
@@ -46,36 +52,23 @@ public abstract class IntegrationTest : IDisposable
             Role = role
         };
 
-        var passwordHasher =
-         new PasswordHasher<Member>();
-        member.PasswordHash =
-         passwordHasher.HashPassword(
-            member,
-            password);
+        var passwordHasher = new PasswordHasher<Member>();
+        member.PasswordHash = passwordHasher.HashPassword(member, password);
 
-        Writer.Seed(db =>
-          db.Members.Add(member));
+        Writer.Seed(db => db.Members.Add(member));
 
-        var request = 
-           new LoginRequest
+        var request = new LoginRequest
         {
             Email = email,
             Password = password
         };
 
-        var response = 
-        await Client.PostAsJsonAsync(
-            "/auth/login",
-             request);
+        var response = await Client.PostAsJsonAsync("/auth/login", request);
 
-        var login =
-         await response.ReadJsonAs<LoginResponse>(
-            HttpStatusCode.OK);
+        var login = await response.ReadJsonAs<LoginResponse>(HttpStatusCode.OK);
 
         Client.DefaultRequestHeaders.Authorization =
-            new AuthenticationHeaderValue(
-                "Bearer", 
-                login.AccessToken);
+            new AuthenticationHeaderValue("Bearer", login.AccessToken);
 
         return member.Id;
     }
@@ -88,7 +81,6 @@ public abstract class IntegrationTest : IDisposable
             Email = new MemberEmail(email),
             PasswordHash = "dummy-hash-for-tests"
         };
-
 
         Writer.Seed(db => db.Members.Add(member));
 

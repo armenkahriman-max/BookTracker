@@ -1,12 +1,12 @@
 using System.Net;
 using System.Net.Http.Json;
 using BookTracker.Api.Application.UpdateMember;
-using BookTracker.Api.Domain;
 using BookTracker.Api.Domain.Members;
 
 namespace BookTracker.Api.Tests.IntegrationTests.UpdateMember;
 
-public class UpdateMember : IntegrationTest
+[Collection(PostgreSqlCollection.Name)]
+public class UpdateMemberTests(PostgreSqlFixture database) : IntegrationTest(database)
 {
     [Fact]
     public async Task PutMemberUpdatesMember()

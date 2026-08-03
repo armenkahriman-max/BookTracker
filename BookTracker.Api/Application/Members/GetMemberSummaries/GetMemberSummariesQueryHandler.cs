@@ -31,8 +31,8 @@ public class GetMemberSummariesQueryHandler(AppDbContext dbContext) : IHandler
             var search = $"%{request.Search.Trim()}%";
 
             query = query.Where(member =>
-                        EF.Functions.Like((string)member.Name, search) ||
-                        EF.Functions.Like((string)member.Email, search));
+                        EF.Functions.ILike((string)member.Name, search) ||
+                        EF.Functions.ILike((string)member.Email, search));
         }
 
         var totalItems = await query.CountAsync();

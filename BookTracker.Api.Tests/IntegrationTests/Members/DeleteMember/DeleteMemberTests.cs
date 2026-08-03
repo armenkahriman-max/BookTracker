@@ -1,10 +1,9 @@
 using System.Net;
-using BookTracker.Api.Domain;
-using BookTracker.Api.Domain.Members;
 
 namespace BookTracker.Api.Tests.IntegrationTests.DeleteMember;
 
-public class DeleteMember : IntegrationTest
+[Collection(PostgreSqlCollection.Name)]
+public class DeleteMemberTests(PostgreSqlFixture database) : IntegrationTest(database)
 {
     [Fact]
     public async Task DeleteMemberRemovesMember()

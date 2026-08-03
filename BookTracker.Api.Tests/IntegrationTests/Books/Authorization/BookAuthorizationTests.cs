@@ -4,7 +4,8 @@ using BookTracker.Api.Application.CreateBook;
 
 namespace BookTracker.Api.Tests.IntegrationTests.Books.Authorization;
 
-public class BookAuthorizationTests : IntegrationTest
+[Collection(PostgreSqlCollection.Name)]
+public class BookAuthorizationTests(PostgreSqlFixture database) : IntegrationTest(database)
 {
     [Fact]
     public async Task CreateBookRequiresAuthentication()

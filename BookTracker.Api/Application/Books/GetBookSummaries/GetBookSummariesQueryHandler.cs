@@ -24,8 +24,8 @@ public class GetBookSummariesQueryHandler(AppDbContext dbContext) : IHandler
             var search = $"%{request.Search.Trim()}%";
 
             query = query.Where(book =>
-                EF.Functions.Like((string)book.Title, search) ||
-                EF.Functions.Like((string)book.Author, search));
+                EF.Functions.ILike((string)book.Title, search) ||
+                EF.Functions.ILike((string)book.Author, search));
         }
 
         var totalItems = await query.CountAsync();

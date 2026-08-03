@@ -3,28 +3,28 @@ GET http://localhost:5089/books
 ###
 
 # Create Book
-POST http://localhost:5089/books
+POST http://localhost:8080/books
 Content-Type: application/json
 
 {
-   "title": "Octopus Garden",
-  "author": "The Beatles",
-  "year": 1966
+   "title": "Test",
+  "author": "Test Author",
+  "year": 2020
 }
 
 ###
 
 # Delete Book
-DELETE http://localhost:5089/books/2
+DELETE http://localhost:8080/books/2
 
 ###
 
-DELETE http://localhost:5089/books/9999
+DELETE http://localhost:8080/books/9999
 
 ###
 
 # Update Book
-PUT http://localhost:5089/books/1
+PUT http://localhost:8080/books/1
 Content-Type: application/json
 
 {
@@ -35,7 +35,7 @@ Content-Type: application/json
 
 ###
 
-PUT http://localhost:5089/books/9999
+PUT http://localhost:8080/books/9999
 Content-Type: application/json
 
 {
@@ -47,29 +47,29 @@ Content-Type: application/json
 ###
 
 # Get Book by Id
-GET http://localhost:5089/books/3
+GET http://localhost:8080/books/3
 
 ###
 
-GET http://localhost:5089/books/9999
+GET http://localhost:8080/books/9999
 
 ### Get Books Page 1
-GET http://localhost:5089/books?page=1&pageSize=10
+GET http://localhost:8080/books?page=1&pageSize=10
 
 ### Get Books Page 2
-GET http://localhost:5089/books?page=2&pageSize=10
+GET http://localhost:8080/books?page=2&pageSize=10
 
 ### Search Books
-GET http://localhost:5089/books?search=octopus
+GET http://localhost:8080/books?search=octopus
 
 ### Search Books With Paging
-GET http://localhost:5089/books?search=octopus&page=1&pageSize=1
+GET http://localhost:8080/books?search=octopus&page=1&pageSize=1
 
 ### Get Members
-GET http://localhost:5089/members
+GET http://localhost:8080/members
 
 ### Create Member
-POST http://localhost:5089/members
+POST http://localhost:8080/members
 Content-Type: application/json
 
 {
@@ -78,10 +78,10 @@ Content-Type: application/json
 }
 
 ### Get Member Details
-GET http://localhost:5089/members/7
+GET http://localhost:8080/members/7
 
 ### Update Member
-PUT http://localhost:5089/members/7
+PUT http://localhost:8080/members/7
 Content-Type: application/json
 
 {
@@ -90,10 +90,10 @@ Content-Type: application/json
 }
 
 ### Delete Member
-DELETE http://localhost:5089/members/7
+DELETE http://localhost:8080/members/7
 
 ### Create member with credentials
-POST http://localhost:5089/members
+POST http://localhost:8080/members
 Content-Type: application/json
 
 {
@@ -103,7 +103,7 @@ Content-Type: application/json
 }
 
 ### Create member
-POST http://localhost:5089/members
+POST http://localhost:8080/members
 Content-Type: application/json
 
 {
@@ -113,7 +113,7 @@ Content-Type: application/json
 }
 
 ### Login
-POST http://localhost:5089/auth/login
+POST http://localhost:8080/auth/login
 Content-Type: application/json
 
 {
@@ -122,21 +122,21 @@ Content-Type: application/json
 }
 
 ### Current member
-GET http://localhost:5089/auth/me
+GET http://localhost:8080/auth/me
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiQWRhIExvdmVsYWNlIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiYWRhMkBleGFtcGxlLmNvbSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6Ik1lbWJlciIsImV4cCI6MTc4NDMwMDk5OCwiaXNzIjoiQm9va1RyYWNrZXIiLCJhdWQiOiJCb29rVHJhY2tlciJ9.ig5p6uzvHsZ8ybHg1GaHL9d8FuEf0VNuXEZYowbseMs
 
 ### Create member
-POST http://localhost:5089/members
+POST http://localhost:8080/members
 Content-Type: application/json
 
 {
   "name": "Ada Lovelace",
-  "email": "meska@example.com",
+  "email": "  ",
   "password": "analytical-engine"
 }
 
 ### Login
-POST http://localhost:5089/auth/login
+POST http://localhost:8080/auth/login
 Content-Type: application/json
 
 {
@@ -145,7 +145,7 @@ Content-Type: application/json
 }
 
 ### Create book without token
-POST http://localhost:5089/books
+POST http://localhost:8080/books
 Content-Type: application/json
 
 {
@@ -155,7 +155,7 @@ Content-Type: application/json
 }
 
 ### Create book with token
-POST http://localhost:5089/books
+POST http://localhost:8080/books
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiQWRhIExvdmVsYWNlIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiYWRhQGV4YW1wbGUuY29tIiwiZXhwIjoxNzg0Mjg1NTk5LCJpc3MiOiJCb29rVHJhY2tlciIsImF1ZCI6IkJvb2tUcmFja2VyIn0.NAu5t6lxEkZhk-MYTrZ5jEatiwtFncXCIeDOWHKPctA
 
@@ -166,7 +166,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hc
 }
 
 ### Login as regular member
-POST http://localhost:5089/auth/login
+POST http://localhost:8080/auth/login
 Content-Type: application/json
 
 {
@@ -175,7 +175,7 @@ Content-Type: application/json
 }
 
 ### Regular member tries to create book
-POST http://localhost:5089/books
+POST http://localhost:8080/books
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjMiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiQWRhIExvdmVsYWNlIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiaWRhQGV4YW1wbGUuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiTWVtYmVyIiwiZXhwIjoxNzg0MzAxNTQ1LCJpc3MiOiJCb29rVHJhY2tlciIsImF1ZCI6IkJvb2tUcmFja2VyIn0.o-QL0BnGqlGY9j_Iq_kMG99vMuG7vWogTTTVZoEtoxo
 
@@ -187,7 +187,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hc
 }
 
 ### Login as administrator
-POST http://localhost:5089/auth/login
+POST http://localhost:8080/auth/login
 Content-Type: application/json
 
 {
@@ -196,25 +196,25 @@ Content-Type: application/json
 }
 
 ### Administrator creates book
-POST http://localhost:5089/books
+POST http://localhost:8080/books
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiQm9vayBUcmFja2VyIEFkbWluIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiYWRtaW5AYm9va3RyYWNrZXIubG9jYWwiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbmlzdHJhdG9yIiwiZXhwIjoxNzg1NDk4MTUyLCJpc3MiOiJCb29rVHJhY2tlciIsImF1ZCI6IkJvb2tUcmFja2VyIn0.NpTV3GQrJkqeFi9HkS7lCYRGJ5T4UZIUHyfJyz2f9PU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiQm9vayBUcmFja2VyIEFkbWluIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiYWRtaW5AYm9va3RyYWNrZXIubG9jYWwiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbmlzdHJhdG9yIiwiZXhwIjoxNzg1NzYxNTcwLCJpc3MiOiJCb29rVHJhY2tlciIsImF1ZCI6IkJvb2tUcmFja2VyIn0.F58hQsfEODtveijDF4gcwKUfgwJDv44Ojz1P39XzL2s
 
 {
-  "title": "Dune",
+  "title": "",
   "author": "Frank Herbert",
   "year": 1965
 }
 
 ### Administrator views members
-GET http://localhost:5089/members
+GET http://localhost:8080/members
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiQm9vayBUcmFja2VyIEFkbWluIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiYWRtaW5AYm9va3RyYWNrZXIubG9jYWwiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbmlzdHJhdG9yIiwiZXhwIjoxNzg0MzAxMjEzLCJpc3MiOiJCb29rVHJhY2tlciIsImF1ZCI6IkJvb2tUcmFja2VyIn0.naq7J5U17I2HYo8Qm-VCDtKJGtM3Bqp_AO0DLUGAnBI
 
 ### Get book
-GET http://localhost:5089/books/1
+GET http://localhost:8080/books/1
 
 ### First update
-PUT http://localhost:5089/books/1
+PUT http://localhost:8080/books/1
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiQm9vayBUcmFja2VyIEFkbWluIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiYWRtaW5AYm9va3RyYWNrZXIubG9jYWwiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbmlzdHJhdG9yIiwiZXhwIjoxNzg0NzE2NDc5LCJpc3MiOiJCb29rVHJhY2tlciIsImF1ZCI6IkJvb2tUcmFja2VyIn0.xxO7KTGW0vuU2ccRxqxIsOI_uqosVm8-iuD8WqtnFhU
 

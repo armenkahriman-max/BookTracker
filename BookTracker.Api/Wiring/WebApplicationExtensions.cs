@@ -5,6 +5,7 @@ using BookTracker.Api.Seeding;
 using BookTracker.Api.Storage;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using BookTracker.Api.Middleware;
 
 namespace BookTracker.Api.Wiring;
 
@@ -34,6 +35,7 @@ public static class WebApplicationExtensions // program.cs povezano da bude krac
                     passwordHasher);
             }
         }
+        app.UseMiddleware<ExceptionHandlingMiddleware>();
         app.UseAuthentication();
         app.UseAuthorization();
 

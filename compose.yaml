@@ -1,0 +1,28 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: BookTracker.Api/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: 8080
+      FrontendOrigin: http://localhost:3000
+      ConnectionStrings__BookTracker: Data Source=/data/book-tracker.db
+      Jwt__SigningKey: ${JWT_SIGNING_KEY:?set JWT_SIGNING_KEY in .env}
+      DevelopmentAdmin__Password: ${DEVELOPMENT_ADMIN_PASSWORD:?set DEVELOPMENT_ADMIN_PASSWORD in .env}
+    ports:
+      - "8080:8080"
+    volumes:
+      - book-tracker-data:/data
+
+  frontend:
+    build:
+      context: Frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: http://localhost:8080
+    ports:
+      - "3000:80"
+
+volumes:
+  book-tracker-data:

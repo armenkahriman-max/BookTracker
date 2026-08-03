@@ -26,7 +26,7 @@ public static class WebApplicationBuilderExtensions //program.cs konekcija da bu
     private static void RegisterStorage(WebApplicationBuilder builder)
     {
         builder.Services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlite(builder.Configuration.GetConnectionString("BookTracker")));
+            options.UseNpgsql(builder.Configuration.GetConnectionString("BookTracker")));
 
         builder.Services.AddScoped<IBookRepository, EfBookRepository>();
         builder.Services.AddScoped<IMemberRepository, EfMemberRepository>();

@@ -1,4 +1,20 @@
 services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: booktracker
+      POSTGRES_USER: booktracker
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    ports:
+      - "5432:5432"
+    volumes:
+      - book-tracker-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U booktracker -d booktracker"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
   api:
     build:
       context: .
@@ -7,13 +23,14 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_HTTP_PORTS: 8080
       FrontendOrigin: http://localhost:3000
-      ConnectionStrings__BookTracker: Data Source=/data/book-tracker.db
+      ConnectionStrings__BookTracker: Host=postgres;Port=5432;Database=booktracker;Username=booktracker;Password=${POSTGRES_PASSWORD}
       Jwt__SigningKey: ${JWT_SIGNING_KEY:?set JWT_SIGNING_KEY in .env}
       DevelopmentAdmin__Password: ${DEVELOPMENT_ADMIN_PASSWORD:?set DEVELOPMENT_ADMIN_PASSWORD in .env}
     ports:
       - "8080:8080"
-    volumes:
-      - book-tracker-data:/data
+    depends_on:
+      postgres:
+        condition: service_healthy
 
   frontend:
     build:
@@ -25,4 +42,4 @@ services:
       - "3000:80"
 
 volumes:
-  book-tracker-data:
+  book-tracker-postgres:

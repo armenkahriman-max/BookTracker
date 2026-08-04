@@ -1,3 +1,14 @@
+# BookTracker
+
+## Running the tests
+
+### Fast tests (no Docker needed)
+Use these during normal daily development:
+
+```bash
+dotnet test BookTracker.Api.Tests/BookTracker.Api.Tests.csproj
+
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.

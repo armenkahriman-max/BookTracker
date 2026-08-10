@@ -1,0 +1,26 @@
+@using BookTracker.Blazor.Models.Books
+
+<article>
+    <h2>@Book.Title</h2>
+
+    @if (ShowAuthor)
+    {
+        <p>@Book.Author</p>
+    }
+
+    
+    <button type="button" @onclick="SelectBook">
+        Select
+    </button>
+</article>
+
+@code {
+    [Parameter]
+    public required BookSummary Book { get; set; }
+    [Parameter]
+    public bool ShowAuthor { get; set; } = true;
+    [Parameter]
+    public EventCallback<int> OnSelected { get; set; }
+    private Task SelectBook() => OnSelected.InvokeAsync(Book.Id);
+
+}

@@ -5,30 +5,36 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookTracker.Api", "BookTracker.Api\BookTracker.Api.csproj", "{9F5E4B39-C326-48F3-A92E-001362372212}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookTracker.Api.Tests", "BookTracker.Api.Tests\BookTracker.Api.Tests.csproj", "{1AC11069-19BF-4780-9007-4A20F50103A8}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookTracker.Api.IntegrationTests", "BookTracker.Api.IntegrationTests\BookTracker.Api.IntegrationTests.csproj", "{06911089-AA73-4018-B7D5-101153F0B240}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookTracker.Api.Tests", "BookTracker.Api.Tests\BookTracker.Api.Tests.csproj", "{12C2F1C0-3E4F-4679-A6DB-90EE99F2A7CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookTracker.Blazor", "BookTracker.Blazor\BookTracker.Blazor.csproj", "{2CACD8A8-780B-42AC-BC47-BDCDB406C2AA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{9F5E4B39-C326-48F3-A92E-001362372212}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9F5E4B39-C326-48F3-A92E-001362372212}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F5E4B39-C326-48F3-A92E-001362372212}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9F5E4B39-C326-48F3-A92E-001362372212}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1AC11069-19BF-4780-9007-4A20F50103A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1AC11069-19BF-4780-9007-4A20F50103A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1AC11069-19BF-4780-9007-4A20F50103A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1AC11069-19BF-4780-9007-4A20F50103A8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{06911089-AA73-4018-B7D5-101153F0B240}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{06911089-AA73-4018-B7D5-101153F0B240}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06911089-AA73-4018-B7D5-101153F0B240}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06911089-AA73-4018-B7D5-101153F0B240}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12C2F1C0-3E4F-4679-A6DB-90EE99F2A7CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12C2F1C0-3E4F-4679-A6DB-90EE99F2A7CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12C2F1C0-3E4F-4679-A6DB-90EE99F2A7CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12C2F1C0-3E4F-4679-A6DB-90EE99F2A7CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CACD8A8-780B-42AC-BC47-BDCDB406C2AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CACD8A8-780B-42AC-BC47-BDCDB406C2AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CACD8A8-780B-42AC-BC47-BDCDB406C2AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CACD8A8-780B-42AC-BC47-BDCDB406C2AA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal

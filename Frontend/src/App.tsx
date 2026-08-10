@@ -13,7 +13,6 @@ import { MemberListPage } from "./members/MemberListPage";
 import { MemberDetailsPage } from "./members/MemberDetailsPage";
 import { EditMemberPage } from "./members/EditMemberPage";
 
-
 function HomePage() {
   return <h1>Book Tracker</h1>;
 }

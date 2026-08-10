@@ -11,21 +11,15 @@ public class CreateBookCommandHandler(IBookRepository bookRepository) : IHandler
      Actor actor,
      CreateBookRequest request)
     {
-        BookPermissions.EnsureCanManage(actor);
-
-        var book =
+        BookPermissions.EnsureCanManage(actor); var book =
             new Book
             {
-                Title =
-                    new BookTitle(request.Title),
-                Author =
-                    new AuthorName(request.Author),
-                Year =
-                    request.Year
+                Title = new BookTitle(request.Title),
+                Author = new AuthorName(request.Author),
+                Year = request.Year
             };
 
-        var savedBook =
-            await bookRepository.AddAsync(book);
+        var savedBook = await bookRepository.AddAsync(book);
 
         return
             new CreateBookResponse

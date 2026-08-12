@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookTracker.Api", "BookTrac
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookTracker.Api.IntegrationTests", "BookTracker.Api.IntegrationTests\BookTracker.Api.IntegrationTests.csproj", "{06911089-AA73-4018-B7D5-101153F0B240}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookTracker.Api.Tests", "BookTracker.Api.Tests\BookTracker.Api.Tests.csproj", "{12C2F1C0-3E4F-4679-A6DB-90EE99F2A7CC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookTracker.Api.Tests", "BookTracker.Api.IntegrationTests\BookTracker.Api.Tests\BookTracker.Api.Tests.csproj", "{12C2F1C0-3E4F-4679-A6DB-90EE99F2A7CC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookTracker.Blazor", "BookTracker.Blazor\BookTracker.Blazor.csproj", "{2CACD8A8-780B-42AC-BC47-BDCDB406C2AA}"
 EndProject

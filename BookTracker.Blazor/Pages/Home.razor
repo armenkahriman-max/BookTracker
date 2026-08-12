@@ -3,25 +3,20 @@
 @using BookTracker.Blazor.Api
 @using BookTracker.Blazor.Components.Books
 @inject BookTrackerClient BookTrackerClient
+@inject NavigationManager NavigationManager
+
 
 <PageTitle>Book Tracker</PageTitle>
 
 <h1>Book Tracker</h1>
 
-@if (selectedBookId is not null)
-{
-    <p>Geselecteerd boek: @selectedBookId</p>
-}
 
 <button @onclick="ToggleAuthors">
     @(showAuthors ? "Hide author" : "Show author")
 </button>
 
 <div class="mb-3">
-    <input class="form-control"
-           @bind="search"
-           @bind:event="oninput"
-           placeholder="Zoek op titel of auteur..." />
+    <input class="form-control" @bind="search" @bind:event="oninput" placeholder="Zoek op titel of auteur..." />
     <button class="btn btn-primary mt-2" @onclick="SearchAsync">Zoeken</button>
 </div>
 
@@ -41,23 +36,17 @@ else
 {
     @foreach (var book in result.Items)
     {
-        <BookSummaryCard Book="book"
-                         ShowAuthor="showAuthors"
-                         OnSelected="SelectBook" />
+        <BookSummaryCard Book="book" ShowAuthor="showAuthors" OnSelected="SelectBook" />
     }
 
     <div class="d-flex align-items-center gap-3 mt-3">
-        <button class="btn btn-secondary"
-                disabled="@(currentPage <= 1)"
-                @onclick="PreviousPageAsync">
+        <button class="btn btn-secondary" disabled="@(currentPage <= 1)" @onclick="PreviousPageAsync">
             Vorige
         </button>
 
         <span>Pagina @result.Page van @result.TotalPages</span>
 
-        <button class="btn btn-secondary"
-                disabled="@(currentPage >= result.TotalPages)"
-                @onclick="NextPageAsync">
+        <button class="btn btn-secondary" disabled="@(currentPage >= result.TotalPages)" @onclick="NextPageAsync">
             Volgende
         </button>
     </div>
@@ -93,7 +82,7 @@ else
         }
         catch
         {
-            error = "Er is een fout opgetreden bij het laden van de boeken.";
+            error = "There was an error while loading the book.";
             result = null;
         }
         finally
@@ -133,6 +122,6 @@ else
 
     private void SelectBook(int bookId)
     {
-        selectedBookId = bookId;
+        NavigationManager.NavigateTo($"/books/{bookId}");
     }
 }

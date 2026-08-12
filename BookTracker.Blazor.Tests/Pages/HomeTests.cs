@@ -91,7 +91,7 @@ public class HomeTests : BunitContext
         var cut = Render<Home>();
 
         Assert.Contains(
-            "Er is een fout opgetreden bij het laden van de boeken.",
+            "There was an error while loading the book.",
             cut.Markup);
     }
 

@@ -1,0 +1,70 @@
+@page "/books/{Id:int}"
+@using BookTracker.Blazor.Models.Books
+@using BookTracker.Blazor.Api
+@inject BookTrackerClient BookTrackerClient
+@inject NavigationManager NavigationManager
+
+<PageTitle>@(book?.Title ?? "BookDetails")</PageTitle>
+
+@if (loading)
+{
+    <p>Book loading...</p>
+}
+else if (error)
+{
+    <div class="alert alert-danger">There was an error while loading the book.</div>
+    <button class="btn btn-secondary" @onclick="GoBack">Return to list</button>
+}
+else if (book is null)
+{
+    <p>Book not found.</p>
+    <button class="btn btn-secondary" @onclick="GoBack">Return to list</button>
+}
+else
+{
+    <h1>@book.Title</h1>
+    <p><strong>Author:</strong> @book.Author</p>
+    <p><strong>Year:</strong> @book.Year</p>
+
+    <button class="btn btn-secondary" @onclick="GoBack">Back to list</button>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private BookDetailsResponse? book;
+    private bool loading;
+    private bool error;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadBookAsync();
+    }
+
+    private async Task LoadBookAsync()
+    {
+        loading = true;
+        error = false;
+        book = null;
+
+        try
+        {
+            book = await BookTrackerClient.GetBookDetails(Id);
+        }
+        catch
+        {
+            error = true;
+            book = null;
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+}

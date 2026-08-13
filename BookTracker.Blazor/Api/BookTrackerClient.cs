@@ -1,6 +1,7 @@
 using System.Net.Http.Json;
 using BookTracker.Blazor.Models.Books;
 using System.Net;
+using BookTracker.Blazor.Models.Auth;
 
 namespace BookTracker.Blazor.Api;
 
@@ -32,5 +33,19 @@ public sealed class BookTrackerClient(HttpClient httpClient)
 
         return await response.Content.ReadFromJsonAsync<BookDetailsResponse>()
         ?? throw new InvalidOperationException("Book details response was empty.");
+    }
+
+    public async Task<LoginResponse?> LoginAsync(LoginRequest request)
+    {
+        using var response = await httpClient.PostAsJsonAsync("auth/login", request);
+
+        if (response.StatusCode == HttpStatusCode.Unauthorized)
+        {
+            return null;
+        }
+
+        response.EnsureSuccessStatusCode();
+
+        return await response.Content.ReadFromJsonAsync<LoginResponse>();
     }
 }

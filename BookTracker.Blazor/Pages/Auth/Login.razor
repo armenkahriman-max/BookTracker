@@ -4,11 +4,7 @@
 @using BookTracker.Blazor.Auth
 @inject BookTrackerClient Client
 @inject NavigationManager Navigation
-@inject IAuthSession AuthSession
-
-
-
-<h3>Login</h3>
+@inject BookTrackerAuthenticationStateProvider AuthStateProvider
 
 @if (loginSucceeded)
 {
@@ -65,7 +61,7 @@ else
                 return;
             }
 
-             await AuthSession.SetTokenAsync(response.AccessToken);
+            await AuthStateProvider.SignInAsync(response.AccessToken);
 
             loginSucceeded = true;
             Navigation.NavigateTo("/");
@@ -77,7 +73,7 @@ else
         finally
         {
             isSubmitting = false;
-        }      
-    
+        }
+
     }
 }

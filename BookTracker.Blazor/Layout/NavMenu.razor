@@ -1,4 +1,5 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@using Microsoft.AspNetCore.Components.Authorization
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">BookTracker.Blazor</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -21,17 +22,48 @@
             </NavLink>
         </div>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="login">
-                <span class="bi bi-person-fill" aria-hidden="true"></span> Login
-            </NavLink>
-        </div>
+        <!-- Authentication-aware navigation -->
+        <AuthorizeView>
+            <Authorized>
+                <!-- Logged-in user -->
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="account">
+                        <span class="bi bi-person-circle" aria-hidden="true"></span> My Account
+                    </NavLink>
+                </div>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="logout">
-                <span class="bi bi-box-arrow-right" aria-hidden="true"></span> Logout
-            </NavLink>
-        </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="logout">
+                        <span class="bi bi-box-arrow-right" aria-hidden="true"></span> Logout
+                    </NavLink>
+                </div>
+
+                <!-- Only visible for Administrators -->
+                <AuthorizeView Roles="Administrator" Context="_">
+                    <Authorized>
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="books/create">
+                                <span class="bi bi-plus-circle" aria-hidden="true"></span> Add Book
+                            </NavLink>
+                        </div>
+                    </Authorized>
+                </AuthorizeView>
+            </Authorized>
+
+            <NotAuthorized>
+                <!-- Anonymous user -->
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="login">
+                        <span class="bi bi-person-fill" aria-hidden="true"></span> Login
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="register">
+                        <span class="bi bi-person-plus" aria-hidden="true"></span> Register
+                    </NavLink>
+                </div>
+            </NotAuthorized>
+        </AuthorizeView>
     </nav>
 </div>
 

@@ -2,6 +2,9 @@
 @using BookTracker.Blazor.Models.Books
 @using BookTracker.Blazor.Api
 @using BookTracker.Blazor.Components.Books
+@using Microsoft.AspNetCore.Components.Authorization
+@inject BookTrackerClient BookTrackerClient
+@inject NavigationManager NavigationManager
 @inject BookTrackerClient BookTrackerClient
 @inject NavigationManager NavigationManager
 
@@ -9,7 +12,6 @@
 <PageTitle>Book Tracker</PageTitle>
 
 <h1>Book Tracker</h1>
-
 
 <button @onclick="ToggleAuthors">
     @(showAuthors ? "Hide author" : "Show author")
@@ -61,7 +63,7 @@ else
     private const int PageSize = 10;
 
     private bool showAuthors = true;
-    private int? selectedBookId;
+    
 
     protected override async Task OnInitializedAsync()
     {

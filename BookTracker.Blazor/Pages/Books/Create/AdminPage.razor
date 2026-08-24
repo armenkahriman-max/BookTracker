@@ -1,0 +1,88 @@
+@page "/books/create"
+@attribute [Authorize(Roles = "Administrator")]
+@using BookTracker.Blazor.Models.Books.Create
+@using Microsoft.AspNetCore.Authorization
+@using BookTracker.Blazor.Api
+@inject BookTrackerClient Client
+@inject NavigationManager Navigation
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="text-danger">@errorMessage</div>
+}
+<EditForm Model="request" OnValidSubmit="CreateBook">
+
+    <DataAnnotationsValidator />
+    <div>
+        <label>Title</label>
+        <InputText @bind-Value="request.Title" />
+        <ValidationMessage For="@(() => request.Title)" />
+    </div>
+
+    <div>
+        <label>Author</label>
+        <InputText @bind-Value="request.Author" />
+        <ValidationMessage For="@(() => request.Author)" />
+    </div>
+
+    <div>
+        <label>Year</label>
+        <InputNumber @bind-Value="request.Year" />
+        <ValidationMessage For="@(() => request.Year)" />
+    </div>
+
+    <button type="submit" disabled="@isSubmitting">Opslaan</button>
+
+</EditForm>
+@code {
+    private CreateBookRequest request = new();
+
+    private bool isSubmitting;
+    private string? errorMessage;
+
+    private async Task CreateBook()
+    {
+        if (isSubmitting)
+            return;
+
+        isSubmitting = true;
+        errorMessage = null;
+
+        try
+        {
+            var result = await Client.CreateBookAsync(request);
+
+            if (result.Status == CreateBookStatus.Created)
+            {
+                if (result.Book is not null)
+                {
+                    Navigation.NavigateTo($"/books/{result.Book.Id}");
+                }
+                
+            }
+            else if (result.Status == CreateBookStatus.ValidationFailed)
+            {
+                errorMessage = result.ErrorMessage;
+            }
+            else if (result.Status == CreateBookStatus.Unauthorized)
+            {
+                errorMessage = "You need to log in again.";
+            }
+            else if (result.Status == CreateBookStatus.Forbidden)
+            {
+                errorMessage = "You do not have permission to create a book.";
+            }
+
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+
+            
+     
+   
+
+    }
+}
+
+

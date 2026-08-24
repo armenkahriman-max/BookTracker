@@ -2,6 +2,8 @@ using System.Net.Http.Json;
 using BookTracker.Blazor.Models.Books;
 using System.Net;
 using BookTracker.Blazor.Models.Auth;
+using BookTracker.Blazor.Models.Books.Create;
+using System.Net.Http;
 
 namespace BookTracker.Blazor.Api;
 
@@ -48,4 +50,45 @@ public sealed class BookTrackerClient(HttpClient httpClient)
 
         return await response.Content.ReadFromJsonAsync<LoginResponse>();
     }
+
+    public async Task<CreateBookResult> CreateBookAsync(CreateBookRequest request)
+    {
+        using var response = await httpClient.PostAsJsonAsync("/books", request);
+
+        if (response.StatusCode == HttpStatusCode.Created)
+        {
+            var book = await response.Content.ReadFromJsonAsync<CreateBookResponse>();
+            return new CreateBookResult(CreateBookStatus.Created, Book: book);
+        }
+        if (response.StatusCode == HttpStatusCode.BadRequest)
+        {
+            return new CreateBookResult(CreateBookStatus.ValidationFailed,
+            ErrorMessage: "Failed to create book.");
+        }
+        if (response.StatusCode == HttpStatusCode.Unauthorized)
+        {
+            return new CreateBookResult(CreateBookStatus.Unauthorized);
+        }
+        if (response.StatusCode == HttpStatusCode.Forbidden)
+        {
+            return new CreateBookResult(CreateBookStatus.Forbidden);
+        }
+        return new CreateBookResult(CreateBookStatus.ValidationFailed,
+        ErrorMessage: "Unexpected error while creating the book.");
+
+
+    }
 }
+public enum CreateBookStatus
+{
+    Created,
+    ValidationFailed,
+    Unauthorized,
+    Forbidden
+}
+public sealed record CreateBookResult(
+    CreateBookStatus Status,
+    CreateBookResponse? Book = null,
+    string? ErrorMessage = null);
+
+

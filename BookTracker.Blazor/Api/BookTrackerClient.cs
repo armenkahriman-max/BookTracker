@@ -4,11 +4,52 @@ using System.Net;
 using BookTracker.Blazor.Models.Auth;
 using BookTracker.Blazor.Models.Books.Create;
 using System.Net.Http;
+using BookTracker.Blazor.Models.Books.Update;
 
 namespace BookTracker.Blazor.Api;
 
 public sealed class BookTrackerClient(HttpClient httpClient)
 {
+
+    public async Task<UpdateBookResult> UpdateBookAsync(int id, UpdateBookRequest request)
+    {
+        using var response = await httpClient.PutAsJsonAsync($"/books/{id}", request);
+
+        if (response.StatusCode == HttpStatusCode.NoContent)
+        {
+            return new UpdateBookResult(UpdateBookStatus.Updated);
+        }
+        if (response.StatusCode == HttpStatusCode.BadRequest)
+        {
+            return new UpdateBookResult(UpdateBookStatus.ValidationFailed,
+            ErrorMessage: "Failed to update book.");
+        }
+        if (response.StatusCode == HttpStatusCode.Unauthorized)
+        {
+            return new UpdateBookResult(UpdateBookStatus.Unauthorized);
+        }
+        if (response.StatusCode == HttpStatusCode.Forbidden)
+        {
+            return new UpdateBookResult(UpdateBookStatus.Forbidden);
+        }
+        if (response.StatusCode == HttpStatusCode.NotFound)
+        {
+            return new UpdateBookResult(UpdateBookStatus.NotFound,
+            ErrorMessage: "Book not found.");
+        }
+        if (response.StatusCode == HttpStatusCode.Conflict)
+        {
+            return new UpdateBookResult(UpdateBookStatus.Conflict);
+        }
+        return new UpdateBookResult(UpdateBookStatus.ValidationFailed, 
+        ErrorMessage: "Unexpected error while creating the book.");
+    }
+
+
+
+
+
+
     public async Task<GetBookSummariesResponse> GetBooks(
         string? search,
         int page,
@@ -86,9 +127,24 @@ public enum CreateBookStatus
     Unauthorized,
     Forbidden
 }
+public enum UpdateBookStatus
+{
+    Updated,
+    ValidationFailed,
+    Unauthorized,
+    Forbidden,
+    NotFound,
+    Conflict
+}
 public sealed record CreateBookResult(
     CreateBookStatus Status,
     CreateBookResponse? Book = null,
     string? ErrorMessage = null);
+
+public sealed record UpdateBookResult(
+    UpdateBookStatus Status,
+    UpdateBookResponse? Book = null,
+    string? ErrorMessage = null);
+
 
 

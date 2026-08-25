@@ -1,0 +1,186 @@
+@page "/books/{id:int}/edit"
+@attribute [Authorize(Roles = "Administrator")]
+@using BookTracker.Blazor.Models.Books.Update
+@using BookTracker.Blazor.Models.Books
+@using Microsoft.AspNetCore.Authorization
+@using BookTracker.Blazor.Api
+@inject BookTrackerClient BookTrackerClient
+@inject NavigationManager NavigationManager
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="text-danger">@errorMessage</div>
+}
+@if (isConflict)
+{
+    <div class="alert alert-warning">
+        <p>@errorMessage</p>
+        <button class="btn btn-primary" @onclick="ReloadBook">Reload latest data</button>
+    </div>
+}
+
+@if (loading)
+{
+    <p>Book loading...</p>
+}
+else if (error)
+{
+    <div class="alert alert-danger">There was an error while loading the book.</div>
+    <button class="btn btn-secondary" @onclick="GoBack">Return to list</button>
+}
+else if (book is null)
+{
+    <p>Book not found.</p>
+    <button class="btn btn-secondary" @onclick="GoBack">Return to list</button>
+}
+else
+{
+    <EditForm Model="request" OnValidSubmit="UpdateBook">
+
+        <DataAnnotationsValidator />
+        <div>
+            <label>Title</label>
+            <InputText @bind-Value="request.Title" />
+            <ValidationMessage For="@(() => request.Title)" />
+        </div>
+
+        <div>
+            <label>Author</label>
+            <InputText @bind-Value="request.Author" />
+            <ValidationMessage For="@(() => request.Author)" />
+        </div>
+
+        <div>
+            <label>Year</label>
+            <InputNumber @bind-Value="request.Year" />
+            <ValidationMessage For="@(() => request.Year)" />
+        </div>
+
+        <button type="submit" disabled="@isSubmitting">Opslaan</button>
+    </EditForm>
+}
+@code {
+    [Parameter]
+    public int id { get; set; }
+    private UpdateBookRequest request = new();
+
+    private BookDetailsResponse? book;
+    private bool loading;
+    private bool error;
+    private bool isSubmitting;
+    private string? errorMessage;
+    private bool isConflict;
+
+    private async Task UpdateBook()
+    {
+        if (isSubmitting)
+            return;
+
+        isSubmitting = true;
+        error = false;
+
+        try
+        {
+            var result = await BookTrackerClient.UpdateBookAsync(id, request);
+
+            if (result.Status == UpdateBookStatus.Updated)
+            {
+
+                NavigationManager.NavigateTo($"/books/{id}");
+
+            }
+            else if (result.Status == UpdateBookStatus.ValidationFailed)
+            {
+                errorMessage = result.ErrorMessage;
+            }
+            else if (result.Status == UpdateBookStatus.Unauthorized)
+            {
+                errorMessage = "You need to log in again";
+            }
+            else if (result.Status == UpdateBookStatus.Forbidden)
+            {
+                errorMessage = "You do not have permission to do that.";
+            }
+            else if (result.Status == UpdateBookStatus.NotFound)
+            {
+                errorMessage = "Book not found";
+            }
+            else if (result.Status == UpdateBookStatus.Conflict)
+            {
+                isConflict = true;
+                errorMessage = "The book was changed by another user.";
+            }
+        }
+
+        finally
+        {
+            isSubmitting = false;
+        }
+
+    }
+
+    
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadBookAsync();
+    }
+    private async Task LoadBookAsync()
+    {
+        loading = true;
+        error = false;
+        book = null;
+
+        try
+        {
+            book = await BookTrackerClient.GetBookDetails(id);
+
+            request.Title = book.Title;
+            request.Author = book.Author;
+            request.Year = book.Year;
+            request.Version = book.Version;
+
+        }
+        catch
+        {
+            error = true;
+            book = null;
+        }
+        finally
+        {
+            loading = false;
+
+        }
+    }
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo(uri: "/");
+    }
+    private async Task ReloadBook()
+    {
+        loading = true;
+        error = false;
+        book = null;
+        isConflict = false;
+        errorMessage = null;
+
+        try
+        {
+            book = await BookTrackerClient.GetBookDetails(id);
+
+            request.Title = book.Title;
+            request.Author = book.Author;
+            request.Year = book.Year;
+            request.Version = book.Version;
+
+        }
+        catch
+        {
+            error = true;
+            book = null;
+        }
+        finally
+        {
+            loading = false;
+
+        }
+    }
+}

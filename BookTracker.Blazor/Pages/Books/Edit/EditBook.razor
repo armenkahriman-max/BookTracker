@@ -132,7 +132,10 @@ else
         try
         {
             book = await BookTrackerClient.GetBookDetails(id);
-
+            if (book is null)
+            {
+                return;
+            }
             request.Title = book.Title;
             request.Author = book.Author;
             request.Year = book.Year;
@@ -165,7 +168,10 @@ else
         try
         {
             book = await BookTrackerClient.GetBookDetails(id);
-
+            if (book is null)
+            {
+                return;
+            }
             request.Title = book.Title;
             request.Author = book.Author;
             request.Year = book.Year;

@@ -52,6 +52,7 @@ public class BookDetailsTests : BunitContext
 
         var handler = new FakeHandler(_ => Task.FromResult(Json(details)));
         RegisterClient(handler);
+        AddAuthorization();
 
         var cut = Render<BookDetails>(p => p.Add(c => c.Id, 42));
 
@@ -67,10 +68,11 @@ public class BookDetailsTests : BunitContext
         Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound)));
 
         RegisterClient(handler);
+        AddAuthorization();
 
         var cut = Render<BookDetails>(p => p.Add(c => c.Id, 999));
 
-        Assert.Contains("Book not found.", cut.Markup);
+        Assert.Contains("Book not found", cut.Markup);
     }
 
     [Fact]
@@ -80,6 +82,7 @@ public class BookDetailsTests : BunitContext
         throw new HttpRequestException("down"));
 
         RegisterClient(handler);
+        AddAuthorization();
 
         var cut = Render<BookDetails>(p => p.Add(c => c.Id, 1));
 
@@ -109,6 +112,7 @@ public class BookDetailsTests : BunitContext
         });
 
         RegisterClient(handler);
+        AddAuthorization();
 
         var cut = Render<BookDetails>(p => p.Add(c => c.Id, 1));
         Assert.Contains("Book 1", cut.Markup);

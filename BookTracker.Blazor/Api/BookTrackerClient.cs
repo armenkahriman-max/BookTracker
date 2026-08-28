@@ -3,7 +3,6 @@ using BookTracker.Blazor.Models.Books;
 using System.Net;
 using BookTracker.Blazor.Models.Auth;
 using BookTracker.Blazor.Models.Books.Create;
-using System.Net.Http;
 using BookTracker.Blazor.Models.Books.Update;
 
 namespace BookTracker.Blazor.Api;
@@ -41,7 +40,7 @@ public sealed class BookTrackerClient(HttpClient httpClient)
         {
             return new UpdateBookResult(UpdateBookStatus.Conflict);
         }
-        return new UpdateBookResult(UpdateBookStatus.ValidationFailed, 
+        return new UpdateBookResult(UpdateBookStatus.ValidationFailed,
         ErrorMessage: "Unexpected error while creating the book.");
     }
 
@@ -119,6 +118,31 @@ public sealed class BookTrackerClient(HttpClient httpClient)
 
 
     }
+
+    public async Task<DeleteBookResult> DeleteBookAsync(int id)
+    {
+        using var response = await httpClient.DeleteAsync($"/books/{id}");
+
+        if (response.StatusCode == HttpStatusCode.NoContent)
+        {
+            return new DeleteBookResult(DeleteBookStatus.NoContent);
+        }
+        if (response.StatusCode == HttpStatusCode.Unauthorized)
+        {
+            return new DeleteBookResult(DeleteBookStatus.Unauthorized);
+        }
+        if (response.StatusCode == HttpStatusCode.Forbidden)
+        {
+            return new DeleteBookResult(DeleteBookStatus.Forbidden);
+        }
+        if (response.StatusCode == HttpStatusCode.NotFound)
+        {
+            return new DeleteBookResult(DeleteBookStatus.NotFound,
+            ErrorMessage: "Book not found.");
+        }
+        return new DeleteBookResult(DeleteBookStatus.Error,
+        ErrorMessage: "An unexpected Error accured.");
+    }
 }
 public enum CreateBookStatus
 {
@@ -136,6 +160,16 @@ public enum UpdateBookStatus
     NotFound,
     Conflict
 }
+
+public enum DeleteBookStatus
+{
+    Unauthorized,
+    NoContent,
+    Forbidden,
+    NotFound,
+    Error
+
+}
 public sealed record CreateBookResult(
     CreateBookStatus Status,
     CreateBookResponse? Book = null,
@@ -145,6 +179,11 @@ public sealed record UpdateBookResult(
     UpdateBookStatus Status,
     UpdateBookResponse? Book = null,
     string? ErrorMessage = null);
+
+public sealed record DeleteBookResult(
+    DeleteBookStatus Status,
+    string? ErrorMessage = null);
+
 
 
 

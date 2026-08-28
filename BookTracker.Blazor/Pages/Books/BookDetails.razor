@@ -1,12 +1,14 @@
 @page "/books/{Id:int}"
 @using BookTracker.Blazor.Models.Books
 @using BookTracker.Blazor.Api
+@using Microsoft.AspNetCore.Components.Authorization
+
 @inject BookTrackerClient BookTrackerClient
 @inject NavigationManager NavigationManager
 
 <PageTitle>@(book?.Title ?? "BookDetails")</PageTitle>
 
-@if (loading)
+    @if (loading)
 {
     <p>Book loading...</p>
 }
@@ -17,7 +19,10 @@ else if (error)
 }
 else if (book is null)
 {
-    <p>Book not found.</p>
+    <p>@(alreadyDeleted
+    ? "This book may already have been deleted."
+    : "Book not found")
+    </p>
     <button class="btn btn-secondary" @onclick="GoBack">Return to list</button>
 }
 else
@@ -27,6 +32,21 @@ else
     <p><strong>Year:</strong> @book.Year</p>
 
     <button class="btn btn-secondary" @onclick="GoBack">Back to list</button>
+
+    <AuthorizeView Roles="Administrator">
+        @if (confirmingDelete)
+        {
+            <p>Really delete "@book.Title"?</p>
+            <button class="btn btn-secondary" disabled="@isDeleting" @onclick="ConfirmDeleteAsync">Confirm</button>
+            <button class="btn btn-secondary" disabled="@isDeleting" @onclick="CancelDelete">Cancel</button>
+        }
+        else
+        {
+            <a href="/books/@Id/edit">Edit</a>
+            <button class="btn btn-danger" @onclick="AskDelete">Delete</button>
+        }
+
+    </AuthorizeView>
 }
 
 @code {
@@ -36,6 +56,9 @@ else
     private BookDetailsResponse? book;
     private bool loading;
     private bool error;
+    private bool confirmingDelete;
+    private bool isDeleting;
+    private bool alreadyDeleted;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -47,6 +70,7 @@ else
         loading = true;
         error = false;
         book = null;
+        alreadyDeleted = false;
 
         try
         {
@@ -62,9 +86,42 @@ else
             loading = false;
         }
     }
+    private async Task ConfirmDeleteAsync()
+    {
+        if (isDeleting)
+            return;
+        isDeleting = true;
+
+        var result = await BookTrackerClient.DeleteBookAsync(Id);
+
+        switch (result.Status)
+        {
+            case DeleteBookStatus.NoContent:
+                NavigationManager.NavigateTo("/");
+                break;
+            case DeleteBookStatus.NotFound:
+                alreadyDeleted = true; book = null; isDeleting = false;
+                break;
+            case DeleteBookStatus.Unauthorized:
+            case DeleteBookStatus.Forbidden:
+                isDeleting = false;
+                break;
+            default:
+                isDeleting = false;
+                break;
+        }
+    }
 
     private void GoBack()
     {
         NavigationManager.NavigateTo("/");
+    }
+    private void AskDelete()
+    {
+        confirmingDelete = true;
+    }
+    private void CancelDelete()
+    {
+        confirmingDelete = false;
     }
 }

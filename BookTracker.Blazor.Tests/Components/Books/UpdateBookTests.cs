@@ -169,7 +169,7 @@ public class UpdateBookTests : BunitContext
         int getCount = 0;
         HttpRequestMessage? lastPut = null;
 
-        var handler = new FakeHandler(async request =>
+        var handler = new FakeHandler(request =>
         {
             if (request.Method.Method == "GET")
             {
@@ -181,14 +181,13 @@ public class UpdateBookTests : BunitContext
                     Year = 2024,
                     Version = getCount == 1 ? versionA : versionB
                 };
-                return Json(book, HttpStatusCode.OK);
+                return Task.FromResult(Json(book, HttpStatusCode.OK));
             }
             lastPut = request;
 
-            if(getCount == 1)
-            return new HttpResponseMessage(HttpStatusCode.Conflict);
-
-            return new HttpResponseMessage(HttpStatusCode.NoContent);
+            if (getCount == 1)
+                return Task.FromResult(new HttpResponseMessage(HttpStatusCode.Conflict));
+                return Task.FromResult(new HttpResponseMessage(HttpStatusCode.NoContent));
         });
 
         RegisterClient(handler);

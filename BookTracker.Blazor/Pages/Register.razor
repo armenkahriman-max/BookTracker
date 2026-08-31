@@ -1,0 +1,91 @@
+@page "/register"
+@using BookTracker.Blazor.Models.Register
+@using BookTracker.Blazor.Models.LoginErr
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@inject BookTrackerClient Client
+<h1>Register</h1>
+
+<EditForm Model="form" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+
+    @if (!string.IsNullOrWhiteSpace(serverError))
+    {
+        <div class="validation-message">@serverError</div>
+    }
+
+    <div>
+        <label>Name</label>
+        <InputText @bind-Value="form.Name" />
+        <ValidationMessage For="() => form.Name" />
+    </div>
+
+    <div>
+        <label>Email</label>
+        <InputText @bind-Value="form.Email" />
+        <ValidationMessage For="() => form.Email" />
+    </div>
+
+    <div>
+        <label>Password</label>
+        <InputText type="password" @bind-Value="form.Password" />
+        <ValidationMessage For="() => form.Password" />
+    </div>
+
+    <div>
+        <label>Confirm password</label>
+        <InputText type="password" @bind-Value="form.PasswordConfirmation" />
+        <ValidationMessage For="() => form.PasswordConfirmation" />
+    </div>
+
+    <button type="submit" disabled="@isSubmitting">Register</button>
+</EditForm>
+
+@code {
+    private RegisterFormModel form = new();
+    private string? serverError;
+    private bool isSubmitting;
+
+    private async Task HandleValidSubmit()
+    {
+        serverError = null;
+        isSubmitting = true;
+
+        try
+        {
+            var request = new RegisterRequest
+            {
+                Name = form.Name,
+                Email = form.Email,
+                Password = form.Password
+            };
+
+            var response = await Http.PostAsJsonAsync("members", request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                Navigation.NavigateTo("/login");
+                return;
+            }
+
+            if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
+            {
+                serverError = "An account with that email address already exists.";
+                return;
+            }
+
+            if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            {
+                var problem = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+                serverError = problem?.Error ?? "The registration data is invalid.";
+                return;
+            }
+
+            serverError = "Registration failed.";
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+}
